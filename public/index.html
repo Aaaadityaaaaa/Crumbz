@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crumbz — the near-expiry food marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@400;500;600&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:       #11201A;
+    --ink-soft:  #1D3327;
+    --ink-soft2: #24402F;
+    --paper:     #F3EEDF;
+    --paper-dim: #E7E0C9;
+    --yellow:    #FFC93C;
+    --red:       #E4573D;
+    --green:     #7BAE7F;
+    --line: rgba(243,238,223,0.18);
+    --display: 'Anton', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --body: 'Work Sans', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink); color:var(--paper); font-family:var(--body);
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  a{color:inherit;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+  input,select,textarea{
+    font-family:var(--body); font-size:14px; color:var(--ink);
+    background:var(--paper); border:1px solid rgba(17,32,26,0.2);
+    border-radius:6px; padding:10px 12px; width:100%;
+  }
+  input:focus,select:focus,textarea:focus{ outline:2px solid var(--yellow); outline-offset:1px; }
+  label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:var(--green); display:block; margin-bottom:6px; }
+
+  .barcode{ display:flex; gap:2px; height:28px; align-items:flex-end; }
+  .barcode span{ display:block; width:2px; background:currentColor; }
+
+  .cut-line{
+    height:22px;
+    background: radial-gradient(circle 6px at 8px 0, transparent 6px, var(--ink) 6.5px) repeat-x, var(--paper);
+    background-size:22px 22px; background-position: 0 -6px;
+  }
+
+  /* ---------- header ---------- */
+  header{ position:sticky; top:0; z-index:60; background:var(--ink); border-bottom:1px solid var(--line); }
+  .nav{ display:flex; align-items:center; justify-content:space-between; padding:14px 28px; gap:20px; flex-wrap:wrap; }
+  .logo{ font-family:var(--display); font-size:22px; color:var(--yellow); text-transform:uppercase; letter-spacing:0.5px; }
+  .tabs{ display:flex; gap:4px; background:var(--ink-soft); border-radius:100px; padding:4px; }
+  .tab-btn{
+    border:none; background:transparent; color:var(--paper-dim);
+    font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.06em;
+    padding:9px 18px; border-radius:100px; transition:.2s;
+  }
+  .tab-btn.active{ background:var(--yellow); color:var(--ink); font-weight:600; }
+  .nav-actions{ display:flex; gap:10px; align-items:center; }
+  .btn{
+    font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.05em;
+    border-radius:100px; padding:10px 18px; border:1px solid var(--line); background:transparent; color:var(--paper);
+    transition:.2s; white-space:nowrap;
+  }
+  .btn:hover{ border-color:var(--yellow); color:var(--yellow); }
+  .btn.primary{ background:var(--yellow); color:var(--ink); border-color:var(--yellow); font-weight:700; }
+  .btn.primary:hover{ background:#ffd869; color:var(--ink); }
+  .btn.danger{ border-color:var(--red); color:var(--red); }
+
+  /* ---------- hero mini ---------- */
+  .hero-mini{ padding:56px 0 36px; }
+  .hero-mini h1{
+    font-family:var(--display); font-weight:400; text-transform:uppercase;
+    font-size:clamp(40px,7vw,72px); line-height:0.92; letter-spacing:-0.01em;
+  }
+  .hero-mini h1 span{ color:var(--yellow); }
+  .hero-mini p{ margin-top:14px; max-width:560px; color:var(--paper-dim); font-size:16px; line-height:1.55; }
+
+  .stats-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:34px; }
+  @media(max-width:760px){ .stats-strip{ grid-template-columns:repeat(2,1fr);} }
+  .stat-pill{ border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
+  .stat-pill .num{ font-family:var(--display); font-size:30px; color:var(--yellow); }
+  .stat-pill .lab{ font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--paper-dim); margin-top:4px; }
+
+  /* ---------- views ---------- */
+  .view{ display:none; padding-bottom:80px; }
+  .view.active{ display:block; }
+
+  /* ---------- toolbar ---------- */
+  .toolbar{
+    display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    background:var(--ink-soft); border:1px solid var(--line); border-radius:12px;
+    padding:14px; margin-top:10px;
+  }
+  .toolbar input[type=text]{ flex:1 1 200px; min-width:160px; }
+  .toolbar select{ flex:0 1 170px; }
+  .toggle-chip{
+    display:flex; align-items:center; gap:8px; font-family:var(--mono); font-size:11.5px;
+    text-transform:uppercase; letter-spacing:0.05em; color:var(--paper-dim);
+    border:1px solid var(--line); border-radius:100px; padding:9px 14px; background:transparent;
+  }
+  .toggle-chip input{ width:14px; height:14px; accent-color:var(--yellow); }
+  .toggle-chip.on{ border-color:var(--green); color:var(--green); }
+
+  .result-row{ display:flex; justify-content:space-between; align-items:center; margin:22px 0 16px; flex-wrap:wrap; gap:10px; }
+  .result-count{ font-family:var(--mono); font-size:12px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.05em; }
+
+  /* ---------- marketplace grid ---------- */
+  .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  @media(max-width:920px){ .grid{ grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:600px){ .grid{ grid-template-columns:1fr;} }
+
+  .item-card{
+    background:var(--paper); color:var(--ink); border-radius:12px; overflow:hidden;
+    display:flex; flex-direction:column; box-shadow:0 10px 26px rgba(0,0,0,0.28);
+    transition:transform .2s ease, box-shadow .2s ease; cursor:pointer; border:none; text-align:left;
+  }
+  .item-card:hover{ transform:translateY(-5px); box-shadow:0 16px 34px rgba(0,0,0,0.36); }
+  .item-thumb{
+    height:128px; position:relative; display:flex; align-items:center; justify-content:center;
+    border-bottom:1px solid rgba(17,32,26,0.1);
+  }
+  .item-thumb svg{ width:58px; height:58px; }
+  #fCategoryPreview svg{ width:26px; height:26px; }
+  .thumb-badge{
+    position:absolute; top:10px; right:10px;
+    background:var(--yellow); color:var(--ink); font-family:var(--mono); font-size:10.5px; font-weight:700;
+    padding:4px 9px; border-radius:5px; transform:rotate(-4deg);
+    box-shadow:2px 2px 0 var(--red); letter-spacing:0.02em;
+  }
+  .thumb-badge.donate{ background:var(--red); color:var(--paper); box-shadow:2px 2px 0 var(--ink); }
+  .thumb-tag{
+    position:absolute; bottom:10px; left:10px;
+    font-family:var(--mono); font-size:9.5px; text-transform:uppercase; letter-spacing:0.05em;
+    background:rgba(17,32,26,0.75); color:var(--paper); padding:3px 8px; border-radius:100px;
+  }
+  .item-top{ padding:16px 18px 0; display:flex; justify-content:space-between; align-items:flex-start; gap:8px; }
+  .item-cat{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.06em; color:#5a6a5f; }
+  .item-outlet{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.04em; color:#5a6a5f; text-align:right; }
+  .urgency{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:0.05em; padding:3px 8px; border-radius:100px; font-weight:600; white-space:nowrap; }
+  .urgency.fresh{ background:rgba(123,174,127,0.25); color:#2f5c34; }
+  .urgency.soon{ background:rgba(255,201,60,0.35); color:#7a5300; }
+  .urgency.urgent{ background:rgba(228,87,61,0.25); color:#a5311d; }
+  .item-name{ font-family:var(--body); font-weight:800; font-size:17px; padding:10px 18px 2px; text-transform:uppercase; }
+  .item-qty{ padding:0 18px; font-size:13px; color:#5a6a5f; }
+  .item-price-row{ margin-top:auto; padding:14px 18px 16px; display:flex; align-items:center; justify-content:space-between; border-top:1px dashed rgba(17,32,26,0.2); }
+  .price-block{ display:flex; align-items:baseline; gap:8px; }
+  .price-now{ font-family:var(--display); font-size:20px; }
+  .price-was{ font-family:var(--mono); font-size:12px; text-decoration:line-through; color:#8a988e; }
+  .price-free{ font-family:var(--display); font-size:18px; color:var(--red); }
+  .discount-tag{ font-family:var(--mono); font-size:10px; background:var(--red); color:var(--paper); padding:3px 7px; border-radius:4px; }
+  .claim-btn{ font-family:var(--mono); font-size:11px; text-transform:uppercase; background:var(--ink); color:var(--paper); border:none; border-radius:100px; padding:8px 14px; }
+  .claim-btn:hover{ background:var(--red); }
+
+  .empty-state{ text-align:center; padding:70px 20px; color:var(--paper-dim); border:1px dashed var(--line); border-radius:14px; margin-top:10px; }
+  .empty-state .big{ font-family:var(--display); font-size:26px; color:var(--yellow); text-transform:uppercase; margin-bottom:10px; }
+
+  /* ---------- about view reuse ---------- */
+  .section-head{ display:flex; align-items:baseline; gap:16px; margin:64px 0 34px; flex-wrap:wrap; }
+  .section-num{ font-family:var(--mono); font-size:13px; color:var(--red); }
+  .section-title{ font-family:var(--display); font-weight:400; text-transform:uppercase; font-size:clamp(26px,4vw,38px); color:var(--paper); }
+  .section-title em{ font-style:normal; color:var(--yellow); }
+  .receipt{ background:var(--paper); color:var(--ink); border-radius:8px; box-shadow:0 16px 40px rgba(0,0,0,0.3); }
+  .receipt-row{ display:grid; grid-template-columns:44px 1fr; gap:14px; padding:22px 26px; border-bottom:1px dashed rgba(17,32,26,0.25); }
+  .receipt-row:last-child{ border-bottom:none; }
+  .receipt-idx{ font-family:var(--mono); font-size:13px; color:var(--red); font-weight:600; }
+  .receipt-row h3{ font-size:16px; text-transform:uppercase; margin-bottom:4px; }
+  .receipt-row p{ font-size:14px; line-height:1.6; color:#3a4a41; }
+  .flow-step{ display:grid; grid-template-columns:64px 1fr; gap:18px; padding:22px 0; border-top:1px solid var(--line); }
+  .flow-step:last-child{ border-bottom:1px solid var(--line); }
+  .flow-num{ font-family:var(--display); font-size:32px; color:transparent; -webkit-text-stroke:1.2px var(--yellow); }
+  .flow-step h3{ font-size:16px; text-transform:uppercase; margin-bottom:5px; }
+  .flow-step p{ font-size:14px; color:var(--paper-dim); line-height:1.6; max-width:600px; }
+  .adv-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:700px){ .adv-grid{ grid-template-columns:1fr; } }
+  .adv-col{ border-radius:10px; padding:26px; }
+  .adv-col.pos{ background:rgba(123,174,127,0.10); border:1px solid rgba(123,174,127,0.35); }
+  .adv-col.neg{ background:rgba(228,87,61,0.08); border:1px solid rgba(228,87,61,0.35); }
+  .adv-head{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px; }
+  .adv-col.pos .adv-head{ color:var(--green); } .adv-col.neg .adv-head{ color:var(--red); }
+  .adv-col li{ list-style:none; padding:10px 0; border-top:1px solid var(--line); font-size:13.5px; color:var(--paper-dim); line-height:1.5; }
+  .adv-col li:first-of-type{ border-top:none; }
+  .team-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  @media(max-width:760px){ .team-grid{ grid-template-columns:repeat(2,1fr);} }
+  .team-badge{ background:var(--paper); color:var(--ink); border-radius:10px; padding:18px; transform:rotate(-1deg); }
+  .team-badge:nth-child(2n){ transform:rotate(1deg); }
+  .team-badge .role{ font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--red); }
+  .team-badge .name{ font-weight:800; margin-top:5px; }
+  .team-badge .prog{ font-size:12.5px; color:#5a6a5f; margin-top:2px; }
+
+  /* ---------- outlets strip ---------- */
+  .outlet-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+  @media(max-width:760px){ .outlet-grid{ grid-template-columns:repeat(2,1fr);} }
+  .outlet-card{ border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .outlet-card h4{ font-size:14px; text-transform:uppercase; margin-bottom:4px; }
+  .outlet-card p{ font-size:12px; color:var(--paper-dim); font-family:var(--mono); }
+
+  /* ---------- footer ---------- */
+  footer{ background:var(--ink-soft); padding:56px 0 36px; border-top:1px solid var(--line); }
+  .refs{ font-family:var(--mono); font-size:11px; color:#8a9990; line-height:2; padding-top:24px; border-top:1px dashed var(--line); margin-top:40px; }
+  .foot-bottom{ margin-top:26px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-family:var(--mono); font-size:11px; color:#8a9990; text-transform:uppercase; }
+
+  /* ---------- modal ---------- */
+  .overlay{ position:fixed; inset:0; background:rgba(9,15,12,0.72); backdrop-filter:blur(2px); display:none; align-items:flex-start; justify-content:center; z-index:100; padding:5vh 16px; overflow-y:auto; }
+  .overlay.open{ display:flex; }
+  .modal{ background:var(--paper); color:var(--ink); border-radius:14px; width:100%; max-width:560px; padding:28px; position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.5); }
+  .modal h2{ font-family:var(--display); text-transform:uppercase; font-size:26px; margin-bottom:4px; }
+  .modal .sub{ font-size:13px; color:#5a6a5f; margin-bottom:22px; }
+  .modal-close{ position:absolute; top:18px; right:18px; background:transparent; border:none; font-size:20px; color:#5a6a5f; line-height:1; }
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .form-grid .full{ grid-column:1/-1; }
+  @media(max-width:480px){ .form-grid{ grid-template-columns:1fr; } }
+  .radio-group{ display:flex; gap:10px; }
+  .radio-opt{ flex:1; border:1px solid rgba(17,32,26,0.25); border-radius:8px; padding:12px; font-family:var(--mono); font-size:12px; text-transform:uppercase; text-align:center; cursor:pointer; }
+  .radio-opt.selected{ border-color:var(--red); background:rgba(228,87,61,0.08); color:var(--red); font-weight:700; }
+  .ai-box{ background:rgba(123,174,127,0.14); border:1px dashed #2f5c34; border-radius:8px; padding:12px 14px; font-size:12.5px; color:#2f5c34; margin-top:4px; }
+  .ai-box b{ font-family:var(--display); font-size:16px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:22px; }
+  .modal-actions .btn{ flex:1; text-align:center; }
+  .btn.dark{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .btn.dark:hover{ background:var(--red); border-color:var(--red); color:var(--paper); }
+
+  .detail-rows{ display:flex; flex-direction:column; gap:2px; margin:18px 0; }
+  .detail-rows div{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed rgba(17,32,26,0.2); font-size:13.5px; }
+  .detail-rows div span:first-child{ color:#5a6a5f; font-family:var(--mono); font-size:11px; text-transform:uppercase; }
+
+  /* ---------- claims drawer ---------- */
+  .drawer{ position:fixed; top:0; right:0; height:100%; width:100%; max-width:400px; background:var(--ink-soft); z-index:110; transform:translateX(100%); transition:transform .3s ease; box-shadow:-20px 0 40px rgba(0,0,0,0.4); display:flex; flex-direction:column; }
+  .drawer.open{ transform:translateX(0); }
+  .drawer-head{ padding:22px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; }
+  .drawer-head h3{ font-family:var(--display); text-transform:uppercase; font-size:20px; color:var(--yellow); }
+  .drawer-body{ padding:18px 24px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; }
+  .claim-item{ background:var(--paper); color:var(--ink); border-radius:8px; padding:14px 16px; }
+  .claim-item .n{ font-weight:800; font-size:14px; text-transform:uppercase; }
+  .claim-item .m{ font-family:var(--mono); font-size:11px; color:#5a6a5f; margin-top:4px; }
+  .drawer-empty{ color:var(--paper-dim); font-size:13px; padding-top:20px; text-align:center; }
+
+  /* ---------- toast ---------- */
+  #toastHost{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .toast{ background:var(--yellow); color:var(--ink); font-family:var(--mono); font-size:12.5px; text-transform:uppercase; letter-spacing:0.03em; padding:12px 20px; border-radius:100px; box-shadow:0 10px 24px rgba(0,0,0,0.35); animation:toastIn .25s ease; }
+  @keyframes toastIn{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+
+  .user-chip{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:12px; color:var(--yellow); }
+  .auth-tabs{ display:flex; gap:4px; background:var(--paper-dim); border-radius:100px; padding:4px; margin-bottom:20px; }
+  .auth-tab{ flex:1; border:none; background:transparent; color:#5a6a5f; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; padding:9px 12px; border-radius:100px; }
+  .auth-tab.active{ background:var(--ink); color:var(--paper); font-weight:600; }
+  .auth-error{ background:rgba(228,87,61,0.12); border:1px solid var(--red); color:#a5311d; font-size:12.5px; border-radius:8px; padding:10px 12px; margin-top:4px; display:none; }
+  .auth-error.show{ display:block; }
+  .auth-form{ display:flex; flex-direction:column; gap:14px; }
+
+  :focus-visible{ outline:2px solid var(--yellow); outline-offset:2px; }
+  ::selection{ background:var(--yellow); color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } html{ scroll-behavior:auto; } }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav wrap" style="padding-left:0; padding-right:0;">
+    <div class="logo">Crumbz</div>
+    <div class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="marketplace">Marketplace</button>
+      <button class="tab-btn" data-tab="about">About</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn" id="claimsBtn">My Claims (<span id="claimsCount">0</span>)</button>
+      <button class="btn primary" id="openListBtn">+ List an item</button>
+      <button class="btn" id="signInBtn">Sign in</button>
+      <div class="user-chip" id="userChip" style="display:none;">
+        <span id="userChipName"></span>
+        <button class="btn" id="signOutBtn" style="padding:6px 12px;">Sign out</button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ MARKETPLACE VIEW ============ -->
+  <section id="view-marketplace" class="view active wrap">
+    <div class="hero-mini">
+      <h1>Rescue it<br>before it's <span>bin&nbsp;food.</span></h1>
+      <p>Browse near-expiry packed food from outlets near you — buy it discounted, or claim it as a free donation. Prices are set by Crumbz's expiry-based pricing model.</p>
+      <div class="stats-strip">
+        <div class="stat-pill"><div class="num" id="statAvailable">0</div><div class="lab">items available</div></div>
+        <div class="stat-pill"><div class="num" id="statDonations">0</div><div class="lab">free donations</div></div>
+        <div class="stat-pill"><div class="num" id="statSaved">₹0</div><div class="lab">saved off shelf price</div></div>
+        <div class="stat-pill"><div class="num" id="statClaimed">0</div><div class="lab">items claimed to date</div></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Search listings — e.g. bread, milk, rice…">
+      <select id="categoryFilter"><option value="">All categories</option></select>
+      <select id="outletFilter"><option value="">All outlets</option></select>
+      <select id="sortFilter">
+        <option value="expiry">Sort: Expiring soonest</option>
+        <option value="discount">Sort: Biggest discount</option>
+        <option value="newest">Sort: Newest listed</option>
+      </select>
+      <button class="toggle-chip" id="donationToggle"><input type="checkbox" id="donationCheckbox">Donations only</button>
+    </div>
+
+    <div class="result-row">
+      <div class="result-count" id="resultCount">— items</div>
+    </div>
+
+    <div class="grid" id="marketplaceGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="big">Nothing matches yet</div>
+      <p>Try clearing a filter, or be the first to list something in this outlet.</p>
+    </div>
+
+    <div class="section-head"><span class="section-num">◆</span><h2 class="section-title">Crumbz <em>outlets</em></h2></div>
+    <div class="outlet-grid" id="outletGrid"></div>
+  </section>
+
+  <!-- ============ ABOUT VIEW ============ -->
+  <section id="view-about" class="view wrap">
+    <div class="hero-mini" style="padding-top:56px;">
+      <p style="font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:10px;">Team Wet Biscuits · Innovation Track · SDG 2, Zero Hunger</p>
+      <h1>The pitch<br>behind <span>crumbz.</span></h1>
+    </div>
+
+    <div class="section-head"><span class="section-num">01</span><h2 class="section-title">The bin is <em>winning</em></h2></div>
+    <div class="receipt">
+      <div class="receipt-row"><div class="receipt-idx">A</div><div><h3>Retail throws out what it can't sell in time</h3><p>Supermarkets, grocery stores and vendors discard millions of tonnes of packed food yearly for approaching expiry — not because it's unsafe.</p></div></div>
+      <div class="receipt-row"><div class="receipt-idx">B</div><div><h3>No route from surplus shelf to hungry buyer</h3><p>There's no scalable platform connecting near-expiry surplus to buyers at a discount, or to donation, before it's tossed.</p></div></div>
+      <div class="receipt-row"><div class="receipt-idx">C</div><div><h3>Warehouses waste while people go without</h3><p>Food piles up while millions remain food insecure — a gap that persists for lack of last-mile delivery and listing infrastructure.</p></div></div>
+      <div class="receipt-row"><div class="receipt-idx">D</div><div><h3>Every discarded item wastes what made it</h3><p>Discarded food drives landfill methane and wastes the energy, water and resources spent producing and packaging it.</p></div></div>
+    </div>
+
+    <div class="section-head"><span class="section-num">02</span><h2 class="section-title">How <em>crumbz</em> works</h2></div>
+    <div>
+      <div class="flow-step"><div class="flow-num">01</div><div><h3>List it</h3><p>Vendors, supermarkets or individuals list near-expiry packed items — item, quantity, expiry date, and price or free donation.</p></div></div>
+      <div class="flow-step"><div class="flow-num">02</div><div><h3>Price it, smartly</h3><p>The pricing model sets a discount based on days to expiry, live in the listing form — the closer to expiry, the steeper the cut.</p></div></div>
+      <div class="flow-step"><div class="flow-num">03</div><div><h3>Route it through an outlet</h3><p>Listings flow to a Crumbz city outlet acting as an aggregation and quality-check hub.</p></div></div>
+      <div class="flow-step"><div class="flow-num">04</div><div><h3>Browse and claim</h3><p>Buyers filter by category, expiry window and outlet, then choose pickup or delivery at checkout.</p></div></div>
+      <div class="flow-step"><div class="flow-num">05</div><div><h3>Deliver it, fast</h3><p>Delivery partners fulfil home orders within each outlet's service radius.</p></div></div>
+      <div class="flow-step"><div class="flow-num">06</div><div><h3>Or donate it</h3><p>Items listed as donations go free to buyers, or route to registered NGOs.</p></div></div>
+    </div>
+
+    <div class="section-head"><span class="section-num">03</span><h2 class="section-title">Weighing it <em>honestly</em></h2></div>
+    <div class="adv-grid">
+      <div class="adv-col pos"><div class="adv-head">+ Advantages</div><ul>
+        <li>Direct SDG 2 impact — less food wasted, more food reaching price-sensitive buyers and donation recipients.</li>
+        <li>Open listing model — anyone can list, maximising recovery volume.</li>
+        <li>Dual access modes — pickup and delivery lower the barrier for everyone.</li>
+        <li>Scalable outlet network — expands city by city at low overhead.</li>
+      </ul></div>
+      <div class="adv-col neg"><div class="adv-head">− Disadvantages</div><ul>
+        <li>Quality perception risk — some buyers may distrust near-expiry items regardless of intact packaging.</li>
+        <li>Logistics complexity — coordinating listers, outlets and delivery needs robust real-time systems.</li>
+        <li>Short listing lifecycle — tight availability windows demand real-time inventory management.</li>
+      </ul></div>
+    </div>
+
+    <div class="section-head"><span class="section-num">04</span><h2 class="section-title">Team <em>wet biscuits</em></h2></div>
+    <div class="team-grid">
+      <div class="team-badge"><div class="role">Team Member</div><div class="name">Nihal Jeronia</div><div class="prog">B.Tech AIML</div></div>
+      <div class="team-badge"><div class="role">Team Member</div><div class="name">Yashraj Sharma</div><div class="prog">B.Tech CSE</div></div>
+      <div class="team-badge"><div class="role">Team Member</div><div class="name">Aditya Sharma</div><div class="prog">B.Tech CSE</div></div>
+      <div class="team-badge"><div class="role">Team Member</div><div class="name">Yash Yaduvanshi</div><div class="prog">B.Tech CSE</div></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="barcode" id="footBarcode" style="color:var(--paper-dim); height:50px;"></div>
+    <div class="refs">
+      <span style="color:var(--green); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:8px;">References</span>
+      [1] FAO, United Nations — Global Food Losses and Food Waste.<br>
+      [2] UNEP — Food Waste Index Report, 2021.<br>
+      [3] Too Good To Go — surplus food redistribution (concept reference).<br>
+      [4] Olio — community food sharing model (concept reference).<br>
+      [5] CIPHET — Report on Post-Harvest Losses in India.<br>
+      [6] IEEE YEIST 2026 — Hackathon Guidelines & Problem Statements, Bali, Indonesia.
+    </div>
+    <div class="foot-bottom">
+      <span>Crumbz © 2026 — Team Wet Biscuits</span>
+      <span>Demo marketplace · listings are shared across everyone viewing this page</span>
+    </div>
+  </div>
+</footer>
+
+<!-- LIST ITEM MODAL -->
+<div class="overlay" id="listOverlay">
+  <div class="modal">
+    <button class="modal-close" id="closeListModal" aria-label="Close">✕</button>
+    <h2>List an item</h2>
+    <p class="sub">Add near-expiry stock to the marketplace. Anyone browsing Crumbz can claim it.</p>
+    <form id="listForm">
+      <div class="form-grid">
+        <div class="full"><label>Item name</label><input type="text" id="fName" required placeholder="e.g. Whole wheat bread, 400g"></div>
+        <div class="full">
+          <label>Photo (optional)</label>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div id="fImagePreview" class="item-thumb" style="width:64px; height:64px; border-radius:10px; flex:0 0 64px; border:1px solid rgba(17,32,26,0.15); background-size:cover; background-position:center;"></div>
+            <input type="file" id="fImage" accept="image/*" style="flex:1;">
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:flex-end;">
+          <div style="flex:1;"><label>Category</label><select id="fCategory"></select></div>
+          <div id="fCategoryPreview" class="item-thumb" style="width:44px; height:44px; border-radius:8px; flex:0 0 44px; border:1px solid rgba(17,32,26,0.15);"></div>
+        </div>
+        <div><label>Lister type</label><select id="fListerType"><option>Supermarket</option><option>Vendor</option><option>Individual</option></select></div>
+        <div><label>Quantity</label><input type="number" id="fQty" min="1" value="1" required></div>
+        <div><label>Unit</label><select id="fUnit"><option>pcs</option><option>kg</option><option>g</option><option>L</option><option>pack</option></select></div>
+        <div><label>Expiry date</label><input type="date" id="fExpiry" required></div>
+        <div><label>Outlet</label><select id="fOutlet"></select></div>
+        <div class="full">
+          <label>Listing type</label>
+          <div class="radio-group">
+            <div class="radio-opt selected" data-mode="sell">Sell at discount</div>
+            <div class="radio-opt" data-mode="donate">Donate free</div>
+          </div>
+        </div>
+        <div class="full" id="sellFields">
+          <div class="form-grid">
+            <div><label>Original price (₹)</label><input type="number" id="fOriginal" min="1" value="100"></div>
+            <div><label>Your price (₹)</label><input type="number" id="fPrice" min="0"></div>
+          </div>
+          <div class="ai-box" id="aiBox">Set an expiry date to see the suggested price.</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="cancelListBtn">Cancel</button>
+        <button type="submit" class="btn primary">List item</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- DETAIL / CLAIM MODAL -->
+<div class="overlay" id="detailOverlay">
+  <div class="modal">
+    <button class="modal-close" id="closeDetailModal" aria-label="Close">✕</button>
+    <h2 id="dName">Item name</h2>
+    <p class="sub" id="dCat">Category · Outlet</p>
+    <div id="dImage" style="width:100%; height:160px; border-radius:12px; margin-bottom:14px; background-size:cover; background-position:center; display:none;"></div>
+    <div class="detail-rows" id="dRows"></div>
+    <div>
+      <label>How will you get it?</label>
+      <div class="radio-group">
+        <div class="radio-opt selected" data-fulfil="pickup">Outlet pickup</div>
+        <div class="radio-opt" data-fulfil="delivery">Home delivery</div>
+      </div>
+      <div class="ai-box" id="fulfilNote" style="margin-top:12px;"></div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn" id="cancelDetailBtn">Cancel</button>
+      <button type="button" class="btn dark" id="confirmClaimBtn">Confirm claim</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="overlay" id="authOverlay">
+  <div class="modal">
+    <button class="modal-close" id="closeAuthModal" aria-label="Close">✕</button>
+    <h2>Welcome to Crumbz</h2>
+    <p class="sub">Sign in to list items and claim rescues.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-auth="login">Sign in</button>
+      <button class="auth-tab" data-auth="signup">Create account</button>
+    </div>
+
+    <form id="loginForm" class="auth-form">
+      <div><label>Email</label><input type="email" id="loginEmail" required autocomplete="email"></div>
+      <div><label>Password</label><input type="password" id="loginPassword" required autocomplete="current-password"></div>
+      <div class="auth-error" id="loginError"></div>
+      <div class="modal-actions"><button type="submit" class="btn primary" style="flex:1;">Sign in</button></div>
+    </form>
+
+    <form id="signupForm" class="auth-form" style="display:none;">
+      <div><label>Name</label><input type="text" id="signupName" required autocomplete="name"></div>
+      <div><label>Email</label><input type="email" id="signupEmail" required autocomplete="email"></div>
+      <div><label>Password</label><input type="password" id="signupPassword" required minlength="8" autocomplete="new-password"></div>
+      <div class="auth-error" id="signupError"></div>
+      <div class="modal-actions"><button type="submit" class="btn primary" style="flex:1;">Create account</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- CLAIMS DRAWER -->
+<div class="drawer" id="claimsDrawer">
+  <div class="drawer-head"><h3>My Claims</h3><button class="modal-close" id="closeDrawer" style="position:static; font-size:18px;">✕</button></div>
+  <div class="drawer-body" id="drawerBody"></div>
+</div>
+
+<div id="toastHost"></div>
+
+<script>
+(function(){
+  var CATEGORIES = ["Bakery","Dairy & Eggs","Packaged Snacks","Beverages","Staples & Grains","Frozen Foods","Fresh Produce","Ready-to-eat"];
+  var OUTLETS = [
+    { id:"central", name:"Crumbz Outlet — Central", radius:"10–15 km" },
+    { id:"north",   name:"Crumbz Outlet — North Gate", radius:"8–12 km" },
+    { id:"riverside", name:"Crumbz Outlet — Riverside", radius:"10–15 km" },
+    { id:"oldtown", name:"Crumbz Outlet — Old Town", radius:"6–10 km" }
+  ];
+  var ICON_STROKE = '#11201A';
+  var CATEGORY_ICONS = {
+    "Bakery": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 34c0-13 9-22 22-22s22 9 22 22c0 9-7 16-16 16H26c-9 0-16-7-16-16z"/><path d="M22 26c1.5-2 3.5-3 6-3M32 22c2 0 4 1 5.5 2.5M42 27c1.5 1.5 2.5 3.5 2.5 6"/><path d="M14 44h36"/></svg>',
+    "Dairy & Eggs": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M24 10h16v8l6 8v28a2 2 0 0 1-2 2H20a2 2 0 0 1-2-2V26l6-8z"/><path d="M18 30h28M24 10l8 8 8-8"/></svg>',
+    "Packaged Snacks": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16h24l4 8-3 28a3 3 0 0 1-3 3H22a3 3 0 0 1-3-3l-3-28z"/><path d="M20 16c0-6 4-9 12-9s12 3 12 9"/><path d="M26 34h12M26 42h8"/></svg>',
+    "Beverages": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M26 8h12v10l5 6v28a3 3 0 0 1-3 3H24a3 3 0 0 1-3-3V24l5-6z"/><path d="M21 34h22M26 8v10h12V8"/></svg>',
+    "Staples & Grains": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 8c6 6 6 10 0 14-6-4-6-8 0-14z"/><path d="M18 22h28l4 30a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4z"/><path d="M24 30v18M32 30v18M40 30v18"/></svg>',
+    "Frozen Foods": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6v52M12 16l40 32M52 16 12 48"/><path d="M32 6l-6 6M32 6l6 6M32 58l-6-6M32 58l6-6M12 16l8 1M12 16l1 8M52 16l-8 1M52 16l-1 8M12 48l8-1M12 48l1-8M52 48l-8-1M52 48l-1-8"/></svg>',
+    "Fresh Produce": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 24c10 0 16 7 16 17 0 9-7 15-16 15s-16-6-16-15c0-10 6-17 16-17z"/><path d="M32 24c0-6 2-10 6-13M32 24c-1-4-4-6-8-6"/></svg>',
+    "Ready-to-eat": '<svg viewBox="0 0 64 64" fill="none" stroke="'+ICON_STROKE+'" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 30h40a20 14 0 0 1-40 0z"/><path d="M12 30a20 6 0 0 1 40 0"/><path d="M26 16c-2-2-2-4 0-6M34 14c-2-2-2-4 0-6"/></svg>'
+  };
+  var CATEGORY_TINTS = {
+    "Bakery": "#EFD9A8",
+    "Dairy & Eggs": "#DCE7EC",
+    "Packaged Snacks": "#F4D8C6",
+    "Beverages": "#D6E6D9",
+    "Staples & Grains": "#E9E0C5",
+    "Frozen Foods": "#D6E9EF",
+    "Fresh Produce": "#DCEAD1",
+    "Ready-to-eat": "#F0DCD4"
+  };
+  function categoryIcon(cat){ return CATEGORY_ICONS[cat] || CATEGORY_ICONS["Packaged Snacks"]; }
+  function categoryTint(cat){ return CATEGORY_TINTS[cat] || "#E7E0C9"; }
+
+  var state = {
+    listings: [], claims: [], userTouchedPrice:false, listMode:"sell", fulfilMode:"pickup", activeItemId:null,
+    token: localStorage.getItem("crumbz_token") || null,
+    user: null,
+    authMode: "login",
+    pendingAction: null,
+    pendingImage: null
+  };
+
+  // ---------- API ----------
+  async function api(path, options){
+    options = options || {};
+    var headers = Object.assign({ "Content-Type":"application/json" }, options.headers || {});
+    if (state.token) headers["Authorization"] = "Bearer " + state.token;
+    var res = await fetch(path, {
+      method: options.method || "GET",
+      headers: headers,
+      body: options.body ? JSON.stringify(options.body) : undefined
+    });
+    var data = null;
+    try { data = await res.json(); } catch(e){ data = null; }
+    if (!res.ok){
+      var err = new Error((data && data.error) || ("Request failed (" + res.status + ")"));
+      err.status = res.status;
+      throw err;
+    }
+    return data;
+  }
+
+  function setToken(token){
+    state.token = token;
+    if (token) localStorage.setItem("crumbz_token", token);
+    else localStorage.removeItem("crumbz_token");
+  }
+
+  // ---------- helpers ----------
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function todayISO(){ var d=new Date(); d.setHours(0,0,0,0); return d.toISOString().slice(0,10); }
+  function daysUntil(dateStr){
+    var target = new Date(dateStr + "T00:00:00");
+    var today = new Date(); today.setHours(0,0,0,0);
+    return Math.round((target - today) / 86400000);
+  }
+  function suggestedDiscount(daysLeft){
+    if (daysLeft <= 0) return 70;
+    if (daysLeft === 1) return 60;
+    if (daysLeft <= 2) return 50;
+    if (daysLeft <= 4) return 35;
+    if (daysLeft <= 6) return 20;
+    return 10;
+  }
+  function suggestedPrice(original, daysLeft){
+    var pct = suggestedDiscount(daysLeft);
+    return Math.max(0, Math.round(original * (1 - pct/100)));
+  }
+  function urgencyClass(daysLeft){
+    if (daysLeft <= 1) return "urgent";
+    if (daysLeft <= 4) return "soon";
+    return "fresh";
+  }
+  function urgencyLabel(daysLeft){
+    if (daysLeft < 0) return "Expired";
+    if (daysLeft === 0) return "Expires today";
+    if (daysLeft === 1) return "Expires tomorrow";
+    return "Expires in " + daysLeft + " days";
+  }
+  function outletName(id){ var o = OUTLETS.find(function(x){return x.id===id;}); return o ? o.name : id; }
+  function toast(msg){
+    var host = document.getElementById("toastHost");
+    var el = document.createElement("div");
+    el.className = "toast"; el.textContent = msg;
+    host.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 2600);
+  }
+
+  // ---------- backend persistence ----------
+  async function fetchListings(){
+    var data = await api("/api/listings");
+    return data.listings;
+  }
+  async function fetchClaims(){
+    if (!state.token) return [];
+    try { var data = await api("/api/claims"); return data.claims; }
+    catch(e){ return []; }
+  }
+  async function fetchMe(){
+    if (!state.token) return null;
+    try { var data = await api("/api/auth/me"); return data.user; }
+    catch(e){ setToken(null); return null; }
+  }
+
+  // ---------- render: filters ----------
+  function populateSelects(){
+    var catSel = document.getElementById("categoryFilter");
+    CATEGORIES.forEach(function(c){ var o=document.createElement("option"); o.value=c; o.textContent=c; catSel.appendChild(o); });
+    var fCat = document.getElementById("fCategory");
+    CATEGORIES.forEach(function(c){ var o=document.createElement("option"); o.value=c; o.textContent=c; fCat.appendChild(o); });
+
+    var outSel = document.getElementById("outletFilter");
+    OUTLETS.forEach(function(o){ var opt=document.createElement("option"); opt.value=o.id; opt.textContent=o.name; outSel.appendChild(opt); });
+    var fOut = document.getElementById("fOutlet");
+    OUTLETS.forEach(function(o){ var opt=document.createElement("option"); opt.value=o.id; opt.textContent=o.name; fOut.appendChild(opt); });
+
+    var og = document.getElementById("outletGrid");
+    og.innerHTML = OUTLETS.map(function(o){
+      return '<div class="outlet-card"><h4>'+o.name+'</h4><p>Delivery radius: '+o.radius+'</p></div>';
+    }).join("");
+  }
+
+  // ---------- render: grid ----------
+  function getFiltered(){
+    var q = document.getElementById("searchInput").value.trim().toLowerCase();
+    var cat = document.getElementById("categoryFilter").value;
+    var out = document.getElementById("outletFilter").value;
+    var sort = document.getElementById("sortFilter").value;
+    var donationsOnly = document.getElementById("donationCheckbox").checked;
+
+    var list = state.listings.filter(function(l){ return l.status === "available"; });
+    if (q) list = list.filter(function(l){ return l.name.toLowerCase().indexOf(q) > -1; });
+    if (cat) list = list.filter(function(l){ return l.category === cat; });
+    if (out) list = list.filter(function(l){ return l.outlet === out; });
+    if (donationsOnly) list = list.filter(function(l){ return l.mode === "donate"; });
+
+    list.sort(function(a,b){
+      if (sort === "expiry") return daysUntil(a.expiry) - daysUntil(b.expiry);
+      if (sort === "discount"){
+        var da = a.mode==="donate" ? 100 : suggestedDiscount(daysUntil(a.expiry));
+        var db = b.mode==="donate" ? 100 : suggestedDiscount(daysUntil(b.expiry));
+        return db - da;
+      }
+      if (sort === "newest") return b.addedAt - a.addedAt;
+      return 0;
+    });
+    return list;
+  }
+
+  function renderGrid(){
+    var grid = document.getElementById("marketplaceGrid");
+    var list = getFiltered();
+    document.getElementById("resultCount").textContent = list.length + (list.length===1 ? " item" : " items") + " available";
+    document.getElementById("emptyState").style.display = list.length ? "none" : "block";
+    grid.innerHTML = list.map(function(l){
+      var days = daysUntil(l.expiry);
+      var uc = urgencyClass(days);
+      var priceHtml;
+      if (l.mode === "donate"){
+        priceHtml = '<span class="price-free">FREE</span>';
+      } else {
+        priceHtml = '<span class="price-block"><span class="price-now">₹'+l.price+'</span><span class="price-was">₹'+l.original+'</span></span>' +
+          '<span class="discount-tag">-'+suggestedDiscount(days)+'%</span>';
+      }
+      var badge = l.mode === "donate"
+        ? '<span class="thumb-badge donate">FREE</span>'
+        : '<span class="thumb-badge">-'+suggestedDiscount(days)+'%</span>';
+      var thumbInner = l.image
+        ? '<img src="'+l.image+'" alt="" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">'
+        : categoryIcon(l.category);
+      return '<button class="item-card" data-id="'+l.id+'">' +
+        '<div class="item-thumb" style="background:'+categoryTint(l.category)+'; position:relative; overflow:hidden;">' + thumbInner + badge +
+        '<span class="thumb-tag">'+outletName(l.outlet).replace("Crumbz Outlet — ","")+'</span></div>' +
+        '<div class="item-top"><span class="item-cat">'+l.category+'</span><span class="urgency '+uc+'">'+urgencyLabel(days)+'</span></div>' +
+        '<div class="item-name">'+l.name+'</div>' +
+        '<div class="item-qty">'+l.qty+' '+l.unit+' · '+l.lister+' · '+outletName(l.outlet)+'</div>' +
+        '<div class="item-price-row">'+priceHtml+'<span class="claim-btn">'+(l.mode==="donate"?"Claim":"Buy")+'</span></div>' +
+        '</button>';
+    }).join("");
+
+    document.querySelectorAll(".item-card").forEach(function(card){
+      card.addEventListener("click", function(){ openDetail(card.getAttribute("data-id")); });
+    });
+  }
+
+  function renderStats(){
+    var available = state.listings.filter(function(l){ return l.status==="available"; });
+    var donations = available.filter(function(l){ return l.mode==="donate"; });
+    var saved = available.reduce(function(sum,l){ return sum + (l.mode==="sell" ? (l.original - l.price) : l.original); }, 0);
+    document.getElementById("statAvailable").textContent = available.length;
+    document.getElementById("statDonations").textContent = donations.length;
+    document.getElementById("statSaved").textContent = "₹" + saved.toLocaleString("en-IN");
+    document.getElementById("statClaimed").textContent = state.listings.filter(function(l){ return l.status==="claimed"; }).length;
+  }
+
+  function renderClaimsCount(){ document.getElementById("claimsCount").textContent = state.claims.length; }
+
+  function renderDrawer(){
+    var body = document.getElementById("drawerBody");
+    if (!state.claims.length){
+      body.innerHTML = '<div class="drawer-empty">No claims yet — browse the marketplace to rescue something.</div>';
+      return;
+    }
+    body.innerHTML = state.claims.slice().reverse().map(function(c){
+      return '<div class="claim-item"><div class="n">'+c.name+'</div><div class="m">'+
+        (c.mode==="donate"?"Donation":"₹"+c.price)+' · '+c.fulfil+' · '+outletName(c.outlet)+'<br>Claimed '+new Date(c.claimedAt).toLocaleString()+'</div></div>';
+    }).join("");
+  }
+
+  // ---------- list an item ----------
+  function updateAiBox(){
+    var expiry = document.getElementById("fExpiry").value;
+    var original = parseFloat(document.getElementById("fOriginal").value) || 0;
+    var box = document.getElementById("aiBox");
+    var priceInput = document.getElementById("fPrice");
+    if (!expiry){ box.textContent = "Set an expiry date to see the suggested price."; return; }
+    var days = daysUntil(expiry);
+    var pct = suggestedDiscount(days);
+    var price = suggestedPrice(original, days);
+    box.innerHTML = 'Suggested price: <b>₹'+price+'</b> (' + pct + '% off) — ' + urgencyLabel(days).toLowerCase();
+    if (!state.userTouchedPrice){ priceInput.value = price; }
+  }
+
+  function resetListForm(){
+    document.getElementById("listForm").reset();
+    document.getElementById("fExpiry").min = todayISO();
+    state.userTouchedPrice = false;
+    state.listMode = "sell";
+    state.pendingImage = null;
+    var preview = document.getElementById("fImagePreview");
+    preview.style.backgroundImage = "";
+    preview.innerHTML = "";
+    document.querySelectorAll('.radio-opt[data-mode]').forEach(function(r){ r.classList.toggle("selected", r.getAttribute("data-mode")==="sell"); });
+    document.getElementById("sellFields").style.display = "";
+    document.getElementById("aiBox").textContent = "Set an expiry date to see the suggested price.";
+  }
+
+  document.getElementById("openListBtn").addEventListener("click", function(){
+    if (!state.user){ toast("Sign in to list an item"); openAuth("login"); return; }
+    resetListForm();
+    updateCategoryPreview();
+    document.getElementById("listOverlay").classList.add("open");
+  });
+  document.getElementById("closeListModal").addEventListener("click", function(){ document.getElementById("listOverlay").classList.remove("open"); });
+  document.getElementById("cancelListBtn").addEventListener("click", function(){ document.getElementById("listOverlay").classList.remove("open"); });
+
+  document.querySelectorAll('.radio-opt[data-mode]').forEach(function(r){
+    r.addEventListener("click", function(){
+      document.querySelectorAll('.radio-opt[data-mode]').forEach(function(x){ x.classList.remove("selected"); });
+      r.classList.add("selected");
+      state.listMode = r.getAttribute("data-mode");
+      document.getElementById("sellFields").style.display = state.listMode === "sell" ? "" : "none";
+    });
+  });
+  function updateCategoryPreview(){
+    var cat = document.getElementById("fCategory").value;
+    var box = document.getElementById("fCategoryPreview");
+    box.style.background = categoryTint(cat);
+    box.innerHTML = categoryIcon(cat);
+  }
+  document.getElementById("fCategory").addEventListener("change", updateCategoryPreview);
+  document.getElementById("fExpiry").addEventListener("input", updateAiBox);
+  document.getElementById("fOriginal").addEventListener("input", updateAiBox);
+  document.getElementById("fPrice").addEventListener("input", function(){ state.userTouchedPrice = true; });
+
+  document.getElementById("fImage").addEventListener("change", function(e){
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")){ toast("Please choose an image file"); e.target.value = ""; return; }
+    if (file.size > 8 * 1024 * 1024){ toast("Image is too large (max 8MB)"); e.target.value = ""; return; }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var maxDim = 900;
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        var ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        var dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        state.pendingImage = dataUrl;
+        var preview = document.getElementById("fImagePreview");
+        preview.style.backgroundImage = "url('" + dataUrl + "')";
+        preview.innerHTML = "";
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById("listForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    if (!state.user){ toast("Sign in to list an item"); openAuth("login"); return; }
+    var expiry = document.getElementById("fExpiry").value;
+    var original = parseFloat(document.getElementById("fOriginal").value) || 0;
+    var payload = {
+      name: document.getElementById("fName").value.trim(),
+      category: document.getElementById("fCategory").value,
+      qty: parseInt(document.getElementById("fQty").value,10) || 1,
+      unit: document.getElementById("fUnit").value,
+      expiry: expiry,
+      outlet: document.getElementById("fOutlet").value,
+      lister: document.getElementById("fListerType").value,
+      mode: state.listMode,
+      original: state.listMode === "sell" ? original : 0,
+      price: state.listMode === "sell" ? (document.getElementById("fPrice").value || null) : 0,
+      image: state.pendingImage || null
+    };
+    var submitBtn = e.target.querySelector('button[type=submit]');
+    submitBtn.disabled = true;
+    try{
+      var data = await api("/api/listings", { method:"POST", body: payload });
+      state.listings.unshift(data.listing);
+      renderGrid(); renderStats();
+      document.getElementById("listOverlay").classList.remove("open");
+      toast("Listed \u201c" + data.listing.name + "\u201d on the marketplace");
+    }catch(err){
+      toast(err.message || "Could not list item — try again");
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+
+  // ---------- claim flow ----------
+  function openDetail(id){
+    var item = state.listings.find(function(l){ return l.id === id; });
+    if (!item) return;
+    state.activeItemId = id;
+    state.fulfilMode = "pickup";
+    document.querySelectorAll('.radio-opt[data-fulfil]').forEach(function(r){ r.classList.toggle("selected", r.getAttribute("data-fulfil")==="pickup"); });
+
+    var days = daysUntil(item.expiry);
+    document.getElementById("dName").textContent = item.name;
+    document.getElementById("dCat").textContent = item.category + " · " + outletName(item.outlet);
+    var dImg = document.getElementById("dImage");
+    if (item.image){
+      dImg.style.backgroundImage = "url('" + item.image + "')";
+      dImg.style.display = "block";
+    } else {
+      dImg.style.display = "none";
+    }
+    var priceLine = item.mode === "donate" ? "Free donation" : "₹" + item.price + " (was ₹" + item.original + ")";
+    document.getElementById("dRows").innerHTML =
+      '<div><span>Quantity</span><span>'+item.qty+' '+item.unit+'</span></div>' +
+      '<div><span>Listed by</span><span>'+item.lister+'</span></div>' +
+      '<div><span>Expiry</span><span>'+urgencyLabel(days)+'</span></div>' +
+      '<div><span>Price</span><span>'+priceLine+'</span></div>';
+    updateFulfilNote(item);
+    document.getElementById("detailOverlay").classList.add("open");
+  }
+  function updateFulfilNote(item){
+    var note = document.getElementById("fulfilNote");
+    var outlet = OUTLETS.find(function(o){ return o.id === item.outlet; });
+    if (state.fulfilMode === "pickup"){
+      note.textContent = "Pick up in person any time during outlet hours at " + outlet.name + ".";
+    } else {
+      note.textContent = "A delivery partner covering the " + outlet.radius + " radius from " + outlet.name + " will be assigned and will contact you.";
+    }
+  }
+  document.querySelectorAll('.radio-opt[data-fulfil]').forEach(function(r){
+    r.addEventListener("click", function(){
+      document.querySelectorAll('.radio-opt[data-fulfil]').forEach(function(x){ x.classList.remove("selected"); });
+      r.classList.add("selected");
+      state.fulfilMode = r.getAttribute("data-fulfil");
+      var item = state.listings.find(function(l){ return l.id === state.activeItemId; });
+      if (item) updateFulfilNote(item);
+    });
+  });
+  document.getElementById("closeDetailModal").addEventListener("click", function(){ document.getElementById("detailOverlay").classList.remove("open"); });
+  document.getElementById("cancelDetailBtn").addEventListener("click", function(){ document.getElementById("detailOverlay").classList.remove("open"); });
+
+  document.getElementById("confirmClaimBtn").addEventListener("click", async function(){
+    var item = state.listings.find(function(l){ return l.id === state.activeItemId; });
+    if (!item) return;
+    if (!state.user){
+      document.getElementById("detailOverlay").classList.remove("open");
+      toast("Sign in to claim this item");
+      openAuth("login");
+      return;
+    }
+    var btn = this;
+    btn.disabled = true;
+    try{
+      var data = await api("/api/listings/" + item.id + "/claim", { method:"POST", body:{ fulfil: state.fulfilMode } });
+      var idx = state.listings.findIndex(function(l){ return l.id === item.id; });
+      if (idx > -1) state.listings[idx] = data.listing;
+      state.claims.unshift(data.claim);
+      renderClaimsCount(); renderDrawer(); renderGrid(); renderStats();
+      document.getElementById("detailOverlay").classList.remove("open");
+      toast((item.mode==="donate"?"Donation claimed: ":"Purchased: ") + item.name);
+    }catch(err){
+      toast(err.message || "Could not claim this item");
+      if (err.status === 409){
+        document.getElementById("detailOverlay").classList.remove("open");
+        var fresh = await fetchListings();
+        state.listings = fresh;
+        renderGrid(); renderStats();
+      }
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  // ---------- claims drawer open/close ----------
+  document.getElementById("claimsBtn").addEventListener("click", function(){
+    if (!state.user){ toast("Sign in to view your claims"); openAuth("login"); return; }
+    document.getElementById("claimsDrawer").classList.add("open");
+  });
+  document.getElementById("closeDrawer").addEventListener("click", function(){ document.getElementById("claimsDrawer").classList.remove("open"); });
+
+  // ---------- toolbar events ----------
+  ["searchInput","categoryFilter","outletFilter","sortFilter"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", renderGrid);
+  });
+  document.getElementById("donationCheckbox").addEventListener("change", function(){
+    document.getElementById("donationToggle").classList.toggle("on", this.checked);
+    renderGrid();
+  });
+
+  // ---------- tabs ----------
+  document.querySelectorAll(".tab-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".tab-btn").forEach(function(b){ b.classList.remove("active"); });
+      btn.classList.add("active");
+      var target = btn.getAttribute("data-tab");
+      document.getElementById("view-marketplace").classList.toggle("active", target==="marketplace");
+      document.getElementById("view-about").classList.toggle("active", target==="about");
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+
+  // ---------- barcode decor ----------
+  document.querySelectorAll(".barcode").forEach(function(bc){
+    for (var i=0;i<40;i++){
+      var bar = document.createElement("span");
+      bar.style.width = (Math.random()>0.8 ? "3px" : "1.5px");
+      bar.style.height = (Math.random()>0.5 ? "100%" : "70%");
+      bc.appendChild(bar);
+    }
+  });
+
+  // ---------- auth UI ----------
+  function openAuth(mode){
+    setAuthMode(mode || "login");
+    document.getElementById("loginError").classList.remove("show");
+    document.getElementById("signupError").classList.remove("show");
+    document.getElementById("authOverlay").classList.add("open");
+  }
+  function setAuthMode(mode){
+    state.authMode = mode;
+    document.querySelectorAll(".auth-tab").forEach(function(t){ t.classList.toggle("active", t.getAttribute("data-auth")===mode); });
+    document.getElementById("loginForm").style.display = mode === "login" ? "" : "none";
+    document.getElementById("signupForm").style.display = mode === "signup" ? "" : "none";
+  }
+  document.querySelectorAll(".auth-tab").forEach(function(t){
+    t.addEventListener("click", function(){ setAuthMode(t.getAttribute("data-auth")); });
+  });
+  document.getElementById("closeAuthModal").addEventListener("click", function(){ document.getElementById("authOverlay").classList.remove("open"); });
+  document.getElementById("signInBtn").addEventListener("click", function(){ openAuth("login"); });
+  document.getElementById("signOutBtn").addEventListener("click", async function(){
+    setToken(null);
+    state.user = null;
+    state.claims = [];
+    try{ await api("/api/auth/logout", { method:"POST" }); }catch(e){}
+    renderAuthUI(); renderClaimsCount(); renderDrawer();
+    toast("Signed out");
+  });
+
+  function renderAuthUI(){
+    var signedIn = !!state.user;
+    document.getElementById("signInBtn").style.display = signedIn ? "none" : "";
+    document.getElementById("userChip").style.display = signedIn ? "flex" : "none";
+    if (signedIn) document.getElementById("userChipName").textContent = state.user.name;
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    var errBox = document.getElementById("loginError");
+    errBox.classList.remove("show");
+    var submitBtn = e.target.querySelector('button[type=submit]');
+    submitBtn.disabled = true;
+    try{
+      var data = await api("/api/auth/login", { method:"POST", body:{
+        email: document.getElementById("loginEmail").value.trim(),
+        password: document.getElementById("loginPassword").value
+      }});
+      setToken(data.token);
+      state.user = data.user;
+      document.getElementById("authOverlay").classList.remove("open");
+      e.target.reset();
+      renderAuthUI();
+      state.claims = await fetchClaims();
+      renderClaimsCount(); renderDrawer();
+      toast("Welcome back, " + data.user.name + "!");
+    }catch(err){
+      errBox.textContent = err.message || "Could not sign in";
+      errBox.classList.add("show");
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+
+  document.getElementById("signupForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    var errBox = document.getElementById("signupError");
+    errBox.classList.remove("show");
+    var submitBtn = e.target.querySelector('button[type=submit]');
+    submitBtn.disabled = true;
+    try{
+      var data = await api("/api/auth/signup", { method:"POST", body:{
+        name: document.getElementById("signupName").value.trim(),
+        email: document.getElementById("signupEmail").value.trim(),
+        password: document.getElementById("signupPassword").value
+      }});
+      setToken(data.token);
+      state.user = data.user;
+      document.getElementById("authOverlay").classList.remove("open");
+      e.target.reset();
+      renderAuthUI();
+      state.claims = await fetchClaims();
+      renderClaimsCount(); renderDrawer();
+      toast("Account created — welcome, " + data.user.name + "!");
+    }catch(err){
+      errBox.textContent = err.message || "Could not create account";
+      errBox.classList.add("show");
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+
+  // ---------- init ----------
+  async function init(){
+    populateSelects();
+    document.getElementById("fExpiry").min = todayISO();
+
+    if (state.token){
+      state.user = await fetchMe();
+    }
+    renderAuthUI();
+
+    try{
+      state.listings = await fetchListings();
+    }catch(e){
+      state.listings = [];
+      toast("Could not reach the server — is it running?");
+    }
+    state.claims = await fetchClaims();
+    renderGrid(); renderStats(); renderClaimsCount(); renderDrawer();
+  }
+  init();
+})();
+</script>
+</body>
+</html>
