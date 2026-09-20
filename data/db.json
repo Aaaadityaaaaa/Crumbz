@@ -6,6 +6,13 @@
       "email": "a@gmail.com",
       "password_hash": "$2b$10$vlnZE70tXdqk8uz3N.VYyeAhkcbsRGzTRlnAUrm4UiC8VBxJ0.p2i",
       "createdAt": 1787035929139
+    },
+    {
+      "id": "mu9wg3hg7e9604197c",
+      "name": "Nihal Jeronia",
+      "email": "njeronia777@gmail.com",
+      "password_hash": "$2b$10$ZhldO9jXb3WlZJEvpr1zfO7DT0cyen2I7TP1WC4f1KWHcgUIY6u/W",
+      "createdAt": 1789913774645
     }
   ],
   "listings": [
@@ -117,7 +124,7 @@
       "original": 0,
       "mode": "donate",
       "price": 0,
-      "status": "available",
+      "status": "claimed",
       "addedAt": 1787034107870,
       "ownerId": null
     },
@@ -187,6 +194,23 @@
       "addedAt": 1787036516870,
       "ownerId": "msyb1vqm3518b1725e",
       "image": "/uploads/msybehaabc119dd9f5.jpg"
+    },
+    {
+      "id": "mu9yugwy88208612c2",
+      "name": "Monster Energy Ultra — Monster, Monster Energy, 350ml",
+      "category": "Beverages",
+      "qty": 1,
+      "unit": "L",
+      "expiry": "2028-09-29",
+      "outlet": "central",
+      "lister": "Supermarket",
+      "mode": "sell",
+      "original": 100,
+      "price": 90,
+      "status": "claimed",
+      "addedAt": 1789917804322,
+      "ownerId": "mu9wg3hg7e9604197c",
+      "image": "/uploads/mu9yugwya6acd26586.jpg"
     }
   ],
   "claims": [
@@ -211,6 +235,40 @@
       "outlet": "central",
       "fulfil": "pickup",
       "claimedAt": 1787036525237
+    },
+    {
+      "id": "mu9yxdpya5d28cf4aa",
+      "listingId": "mu9yugwy88208612c2",
+      "userId": "mu9wg3hg7e9604197c",
+      "name": "Monster Energy Ultra — Monster, Monster Energy, 350ml",
+      "mode": "sell",
+      "price": 90,
+      "outlet": "central",
+      "fulfil": "delivery",
+      "claimedAt": 1789917940150
+    },
+    {
+      "id": "mu9zjzzfc48a8e1383",
+      "orderId": "ORD-MU9ZJZZF",
+      "listingId": "msyb1fdqced805f285",
+      "userId": "mu9wg3hg7e9604197c",
+      "userName": "Nihal Jeronia",
+      "userEmail": "njeronia777@gmail.com",
+      "name": "Ripe Bananas, 1kg",
+      "category": "Fresh Produce",
+      "mode": "donate",
+      "price": 0,
+      "original": 0,
+      "outlet": "riverside",
+      "fulfil": "delivery",
+      "address": "Hahahahhaha",
+      "phone": "8127099763",
+      "paymentMethod": "free",
+      "paymentStatus": "paid",
+      "deliveryFee": 0,
+      "totalAmount": 0,
+      "passCode": "CRUMBZ-PASS-080560",
+      "claimedAt": 1789918995435
     }
   ]
 }

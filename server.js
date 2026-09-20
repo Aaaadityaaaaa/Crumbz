@@ -172,22 +172,58 @@ app.post('/api/listings', authRequired, (req, res) => {
   res.status(201).json({ listing: toListingJson(listing) });
 });
 
+app.get('/api/my-listings', authRequired, (req, res) => {
+  const rows = store.db.listings.filter(l => l.ownerId === req.user.sub).sort((a, b) => b.addedAt - a.addedAt);
+  res.json({ listings: rows.map(toListingJson) });
+});
+
+app.delete('/api/listings/:id', authRequired, (req, res) => {
+  const idx = store.db.listings.findIndex(l => l.id === req.params.id && (l.ownerId === req.user.sub || !l.ownerId));
+  if (idx === -1) return res.status(404).json({ error: 'Listing not found or unauthorized' });
+  const [removed] = store.db.listings.splice(idx, 1);
+  store.save();
+  res.json({ ok: true, deletedId: removed.id });
+});
+
 app.post('/api/listings/:id/claim', authRequired, (req, res) => {
-  const fulfil = req.body && req.body.fulfil === 'delivery' ? 'delivery' : 'pickup';
+  const b = req.body || {};
+  const fulfil = b.fulfil === 'delivery' ? 'delivery' : 'pickup';
   const listing = store.db.listings.find(l => l.id === req.params.id);
   if (!listing) return res.status(404).json({ error: 'Listing not found' });
   if (listing.status !== 'available') return res.status(409).json({ error: 'This item was already claimed by someone else' });
 
   listing.status = 'claimed';
+  const deliveryFee = (fulfil === 'delivery' && listing.mode !== 'donate') ? 25 : 0;
+  const totalAmount = listing.mode === 'donate' ? 0 : (listing.price + deliveryFee);
+  const passCode = 'CRUMBZ-PASS-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+
   const claim = {
-    id: uid(), listingId: listing.id, userId: req.user.sub, name: listing.name,
-    mode: listing.mode, price: listing.price, outlet: listing.outlet,
-    fulfil, claimedAt: Date.now()
+    id: uid(),
+    orderId: 'ORD-' + Date.now().toString(36).toUpperCase(),
+    listingId: listing.id,
+    userId: req.user.sub,
+    userName: req.user.name,
+    userEmail: req.user.email,
+    name: listing.name,
+    category: listing.category,
+    mode: listing.mode,
+    price: listing.price,
+    original: listing.original,
+    outlet: listing.outlet,
+    fulfil,
+    address: (b.address || '').trim(),
+    phone: (b.phone || '').trim(),
+    paymentMethod: listing.mode === 'donate' ? 'free' : (b.paymentMethod || 'upi'),
+    paymentStatus: 'paid',
+    deliveryFee,
+    totalAmount,
+    passCode,
+    claimedAt: Date.now()
   };
   store.db.claims.push(claim);
   store.save();
 
-  res.status(201).json({ claim: toClaimJson(claim), listing: toListingJson(listing) });
+  res.status(201).json({ claim, listing: toListingJson(listing) });
 });
 
 app.get('/api/claims', authRequired, (req, res) => {
@@ -201,6 +237,74 @@ app.get('/api/stats', (req, res) => {
   const saved = available.reduce((sum, l) => sum + (l.mode === 'sell' ? (l.original - l.price) : l.original), 0);
   const claimed = store.db.listings.filter(l => l.status === 'claimed').length;
   res.json({ available: available.length, donations, saved: Math.round(saved), claimed });
+});
+
+// ---------- barcode lookup (Open Food Facts proxy) ----------
+const CRUMBZ_CATEGORIES = [
+  { key: 'Bakery',           words: ['bread','biscuit','cake','pastry','cookie','bakery','rusk','toast','muffin','croissant','bun'] },
+  { key: 'Dairy & Eggs',     words: ['milk','cheese','yogurt','yoghurt','butter','egg','dairy','curd','paneer','cream','ghee','lassi'] },
+  { key: 'Packaged Snacks',  words: ['chip','snack','cracker','wafer','nuts','chocolate','candy','sweet','spread','namkeen','bhujia','mixture'] },
+  { key: 'Beverages',        words: ['juice','water','soda','tea','coffee','drink','beverage','cola','energy','squash','shake'] },
+  { key: 'Staples & Grains', words: ['rice','wheat','flour','grain','cereal','pasta','lentil','dal','atta','maida','oat','muesli','noodle'] },
+  { key: 'Frozen Foods',     words: ['frozen','ice cream','ice-cream','gelato','popsicle'] },
+  { key: 'Fresh Produce',    words: ['fruit','vegetable','produce','fresh','salad','herb'] },
+  { key: 'Ready-to-eat',     words: ['ready','meal','sandwich','instant','soup','poha','upma','rte','ready to eat'] }
+];
+
+function mapCategory(offCategories) {
+  if (!offCategories) return null;
+  const lower = offCategories.toLowerCase();
+  for (const cat of CRUMBZ_CATEGORIES) {
+    for (const w of cat.words) {
+      if (lower.includes(w)) return cat.key;
+    }
+  }
+  return null;
+}
+
+function parseQuantity(qtyStr) {
+  if (!qtyStr) return { qty: 1, unit: 'pcs' };
+  const match = /(\d+(?:\.\d+)?)\s*(g|kg|ml|l|L|cl|oz|lb|pcs|pack|units?|pieces?)/i.exec(qtyStr);
+  if (!match) return { qty: 1, unit: 'pcs' };
+  let num = parseFloat(match[1]);
+  let unit = match[2].toLowerCase();
+  if (unit === 'ml' || unit === 'cl') { unit = 'L'; num = unit === 'cl' ? num / 100 : num / 1000; num = Math.round(num * 100) / 100; }
+  else if (unit === 'g') { unit = 'g'; }
+  else if (unit === 'kg') { unit = 'kg'; }
+  else if (unit === 'l') { unit = 'L'; }
+  else if (unit === 'oz' || unit === 'lb') { unit = 'g'; num = unit === 'oz' ? Math.round(num * 28.35) : Math.round(num * 453.6); }
+  else { unit = 'pcs'; }
+  return { qty: Math.max(1, Math.round(num) || 1), unit };
+}
+
+app.get('/api/barcode/:code', async (req, res) => {
+  const code = req.params.code.replace(/\D/g, '');
+  if (!code || code.length < 8) return res.status(400).json({ found: false, error: 'Invalid barcode' });
+  try {
+    const url = `https://world.openfoodfacts.org/api/v2/product/${code}?fields=product_name,brands,categories,quantity,image_front_url`;
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Crumbz-App/1.0 (contact: crumbz-team@demo.com)' }
+    });
+    const data = await resp.json();
+    if (data.status !== 1 || !data.product) {
+      return res.json({ found: false });
+    }
+    const p = data.product;
+    const parsed = parseQuantity(p.quantity);
+    res.json({
+      found: true,
+      name: p.product_name || '',
+      brand: p.brands || '',
+      category: mapCategory(p.categories),
+      qty: parsed.qty,
+      unit: parsed.unit,
+      rawQuantity: p.quantity || '',
+      image: p.image_front_url || null
+    });
+  } catch (e) {
+    console.error('Barcode lookup failed:', e.message);
+    res.status(502).json({ found: false, error: 'Could not reach product database' });
+  }
 });
 
 // ---------- helpers ----------
@@ -237,6 +341,15 @@ function toClaimJson(c) {
   };
 }
 
-app.listen(PORT, () => {
-  console.log(`Crumbz server running at http://localhost:${PORT}`);
+// ---------- healthcheck & SPA fallback ----------
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', uptime: Math.round(process.uptime()), timestamp: new Date().toISOString() });
+});
+
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Crumbz production server running on port ${PORT}`);
 });

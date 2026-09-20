@@ -30,6 +30,7 @@
   a{color:inherit;}
   button{font-family:inherit; cursor:pointer;}
   .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+  @media(max-width:480px){ .wrap{ padding:0 16px; } }
   input,select,textarea{
     font-family:var(--body); font-size:14px; color:var(--ink);
     background:var(--paper); border:1px solid rgba(17,32,26,0.2);
@@ -69,6 +70,47 @@
   .btn.primary:hover{ background:#ffd869; color:var(--ink); }
   .btn.danger{ border-color:var(--red); color:var(--red); }
 
+  /* hamburger button — hidden on desktop */
+  .hamburger{
+    display:none; background:none; border:none; color:var(--paper); cursor:pointer;
+    width:40px; height:40px; position:relative; flex-shrink:0;
+  }
+  .hamburger span{
+    display:block; position:absolute; left:8px; height:2px; width:24px;
+    background:var(--paper); border-radius:2px; transition:.25s ease;
+  }
+  .hamburger span:nth-child(1){ top:12px; }
+  .hamburger span:nth-child(2){ top:19px; }
+  .hamburger span:nth-child(3){ top:26px; }
+  .hamburger.open span:nth-child(1){ top:19px; transform:rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity:0; }
+  .hamburger.open span:nth-child(3){ top:19px; transform:rotate(-45deg); }
+
+  /* ---------- mobile nav ---------- */
+  @media(max-width:680px){
+    .hamburger{ display:block; }
+    .nav{ padding:12px 16px; gap:12px; flex-wrap:nowrap; }
+    .nav .tabs,
+    .nav .nav-actions{
+      display:none;
+    }
+    .nav.menu-open .tabs,
+    .nav.menu-open .nav-actions{
+      display:flex;
+    }
+    .nav.menu-open{
+      flex-wrap:wrap;
+    }
+    .nav.menu-open .tabs{
+      order:10; width:100%; justify-content:center;
+    }
+    .nav.menu-open .nav-actions{
+      order:11; width:100%; justify-content:center; flex-wrap:wrap;
+    }
+    .tab-btn{ padding:10px 20px; font-size:12px; min-height:44px; display:flex; align-items:center; }
+    .btn{ min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:10px 16px; }
+  }
+
   /* ---------- hero mini ---------- */
   .hero-mini{ padding:56px 0 36px; }
   .hero-mini h1{
@@ -77,12 +119,23 @@
   }
   .hero-mini h1 span{ color:var(--yellow); }
   .hero-mini p{ margin-top:14px; max-width:560px; color:var(--paper-dim); font-size:16px; line-height:1.55; }
+  @media(max-width:480px){
+    .hero-mini{ padding:36px 0 24px; }
+    .hero-mini h1{ font-size:clamp(32px,10vw,48px); }
+    .hero-mini p{ font-size:14px; line-height:1.5; }
+  }
 
   .stats-strip{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:34px; }
   @media(max-width:760px){ .stats-strip{ grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:360px){ .stats-strip{ grid-template-columns:1fr 1fr; gap:10px; } }
   .stat-pill{ border:1px solid var(--line); border-radius:10px; padding:16px 18px; }
   .stat-pill .num{ font-family:var(--display); font-size:30px; color:var(--yellow); }
   .stat-pill .lab{ font-family:var(--mono); font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--paper-dim); margin-top:4px; }
+  @media(max-width:480px){
+    .stat-pill{ padding:12px 14px; }
+    .stat-pill .num{ font-size:24px; }
+    .stat-pill .lab{ font-size:9.5px; }
+  }
 
   /* ---------- views ---------- */
   .view{ display:none; padding-bottom:80px; }
@@ -103,6 +156,12 @@
   }
   .toggle-chip input{ width:14px; height:14px; accent-color:var(--yellow); }
   .toggle-chip.on{ border-color:var(--green); color:var(--green); }
+  @media(max-width:680px){
+    .toolbar{ flex-direction:column; align-items:stretch; gap:8px; padding:12px; border-radius:10px; }
+    .toolbar input[type=text]{ flex:none; width:100%; min-width:0; min-height:44px; font-size:15px; }
+    .toolbar select{ flex:none; width:100%; min-height:44px; font-size:14px; }
+    .toggle-chip{ justify-content:center; min-height:44px; font-size:12px; }
+  }
 
   .result-row{ display:flex; justify-content:space-between; align-items:center; margin:22px 0 16px; flex-wrap:wrap; gap:10px; }
   .result-count{ font-family:var(--mono); font-size:12px; color:var(--paper-dim); text-transform:uppercase; letter-spacing:0.05em; }
@@ -116,12 +175,15 @@
     background:var(--paper); color:var(--ink); border-radius:12px; overflow:hidden;
     display:flex; flex-direction:column; box-shadow:0 10px 26px rgba(0,0,0,0.28);
     transition:transform .2s ease, box-shadow .2s ease; cursor:pointer; border:none; text-align:left;
+    width:100%;
   }
   .item-card:hover{ transform:translateY(-5px); box-shadow:0 16px 34px rgba(0,0,0,0.36); }
+  @media(max-width:600px){ .item-card:hover{ transform:none; } }
   .item-thumb{
     height:128px; position:relative; display:flex; align-items:center; justify-content:center;
     border-bottom:1px solid rgba(17,32,26,0.1);
   }
+  @media(max-width:600px){ .item-thumb{ height:160px; } }
   .item-thumb svg{ width:58px; height:58px; }
   #fCategoryPreview svg{ width:26px; height:26px; }
   .thumb-badge{
@@ -145,14 +207,20 @@
   .urgency.urgent{ background:rgba(228,87,61,0.25); color:#a5311d; }
   .item-name{ font-family:var(--body); font-weight:800; font-size:17px; padding:10px 18px 2px; text-transform:uppercase; }
   .item-qty{ padding:0 18px; font-size:13px; color:#5a6a5f; }
-  .item-price-row{ margin-top:auto; padding:14px 18px 16px; display:flex; align-items:center; justify-content:space-between; border-top:1px dashed rgba(17,32,26,0.2); }
+  .item-price-row{ margin-top:auto; padding:14px 18px 16px; display:flex; align-items:center; justify-content:space-between; border-top:1px dashed rgba(17,32,26,0.2); gap:8px; }
   .price-block{ display:flex; align-items:baseline; gap:8px; }
   .price-now{ font-family:var(--display); font-size:20px; }
   .price-was{ font-family:var(--mono); font-size:12px; text-decoration:line-through; color:#8a988e; }
   .price-free{ font-family:var(--display); font-size:18px; color:var(--red); }
   .discount-tag{ font-family:var(--mono); font-size:10px; background:var(--red); color:var(--paper); padding:3px 7px; border-radius:4px; }
-  .claim-btn{ font-family:var(--mono); font-size:11px; text-transform:uppercase; background:var(--ink); color:var(--paper); border:none; border-radius:100px; padding:8px 14px; }
+  .claim-btn{ font-family:var(--mono); font-size:11px; text-transform:uppercase; background:var(--ink); color:var(--paper); border:none; border-radius:100px; padding:8px 14px; min-height:44px; min-width:60px; display:inline-flex; align-items:center; justify-content:center; }
   .claim-btn:hover{ background:var(--red); }
+  @media(max-width:480px){
+    .item-name{ font-size:15px; padding:8px 14px 2px; }
+    .item-qty{ padding:0 14px; font-size:12px; }
+    .item-top{ padding:12px 14px 0; }
+    .item-price-row{ padding:12px 14px 14px; }
+  }
 
   .empty-state{ text-align:center; padding:70px 20px; color:var(--paper-dim); border:1px dashed var(--line); border-radius:14px; margin-top:10px; }
   .empty-state .big{ font-family:var(--display); font-size:26px; color:var(--yellow); text-transform:uppercase; margin-bottom:10px; }
@@ -189,10 +257,24 @@
   .team-badge .role{ font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--red); }
   .team-badge .name{ font-weight:800; margin-top:5px; }
   .team-badge .prog{ font-size:12.5px; color:#5a6a5f; margin-top:2px; }
+  @media(max-width:480px){
+    .section-head{ margin:40px 0 22px; }
+    .receipt-row{ padding:16px; gap:10px; grid-template-columns:32px 1fr; }
+    .receipt-row h3{ font-size:14px; }
+    .receipt-row p{ font-size:13px; }
+    .flow-step{ grid-template-columns:44px 1fr; gap:12px; padding:16px 0; }
+    .flow-num{ font-size:26px; }
+    .flow-step h3{ font-size:14px; }
+    .flow-step p{ font-size:13px; }
+    .adv-col{ padding:18px; }
+    .adv-col li{ font-size:13px; }
+    .team-badge{ padding:14px; }
+  }
 
   /* ---------- outlets strip ---------- */
   .outlet-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
   @media(max-width:760px){ .outlet-grid{ grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:400px){ .outlet-grid{ grid-template-columns:1fr; gap:10px; } }
   .outlet-card{ border:1px solid var(--line); border-radius:10px; padding:16px; }
   .outlet-card h4{ font-size:14px; text-transform:uppercase; margin-bottom:4px; }
   .outlet-card p{ font-size:12px; color:var(--paper-dim); font-family:var(--mono); }
@@ -201,6 +283,11 @@
   footer{ background:var(--ink-soft); padding:56px 0 36px; border-top:1px solid var(--line); }
   .refs{ font-family:var(--mono); font-size:11px; color:#8a9990; line-height:2; padding-top:24px; border-top:1px dashed var(--line); margin-top:40px; }
   .foot-bottom{ margin-top:26px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; font-family:var(--mono); font-size:11px; color:#8a9990; text-transform:uppercase; }
+  @media(max-width:480px){
+    footer{ padding:36px 0 28px; }
+    .refs{ font-size:10px; line-height:1.8; }
+    .foot-bottom{ flex-direction:column; gap:6px; font-size:10px; }
+  }
 
   /* ---------- modal ---------- */
   .overlay{ position:fixed; inset:0; background:rgba(9,15,12,0.72); backdrop-filter:blur(2px); display:none; align-items:flex-start; justify-content:center; z-index:100; padding:5vh 16px; overflow-y:auto; }
@@ -208,52 +295,152 @@
   .modal{ background:var(--paper); color:var(--ink); border-radius:14px; width:100%; max-width:560px; padding:28px; position:relative; box-shadow:0 30px 60px rgba(0,0,0,0.5); }
   .modal h2{ font-family:var(--display); text-transform:uppercase; font-size:26px; margin-bottom:4px; }
   .modal .sub{ font-size:13px; color:#5a6a5f; margin-bottom:22px; }
-  .modal-close{ position:absolute; top:18px; right:18px; background:transparent; border:none; font-size:20px; color:#5a6a5f; line-height:1; }
+  .modal-close{ position:absolute; top:18px; right:18px; background:transparent; border:none; font-size:20px; color:#5a6a5f; line-height:1; min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; }
   .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
   .form-grid .full{ grid-column:1/-1; }
-  @media(max-width:480px){ .form-grid{ grid-template-columns:1fr; } }
+  @media(max-width:480px){ .form-grid{ grid-template-columns:1fr; } .form-grid .full{ grid-column:1; } }
   .radio-group{ display:flex; gap:10px; }
-  .radio-opt{ flex:1; border:1px solid rgba(17,32,26,0.25); border-radius:8px; padding:12px; font-family:var(--mono); font-size:12px; text-transform:uppercase; text-align:center; cursor:pointer; }
+  .radio-opt{ flex:1; border:1px solid rgba(17,32,26,0.25); border-radius:8px; padding:12px; font-family:var(--mono); font-size:12px; text-transform:uppercase; text-align:center; cursor:pointer; min-height:44px; display:flex; align-items:center; justify-content:center; }
   .radio-opt.selected{ border-color:var(--red); background:rgba(228,87,61,0.08); color:var(--red); font-weight:700; }
   .ai-box{ background:rgba(123,174,127,0.14); border:1px dashed #2f5c34; border-radius:8px; padding:12px 14px; font-size:12.5px; color:#2f5c34; margin-top:4px; }
   .ai-box b{ font-family:var(--display); font-size:16px; }
   .modal-actions{ display:flex; gap:10px; margin-top:22px; }
-  .modal-actions .btn{ flex:1; text-align:center; }
+  .modal-actions .btn{ flex:1; text-align:center; min-height:48px; display:inline-flex; align-items:center; justify-content:center; }
   .btn.dark{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
   .btn.dark:hover{ background:var(--red); border-color:var(--red); color:var(--paper); }
+  @media(max-width:480px){
+    .overlay{ padding:2vh 10px; }
+    .modal{ padding:20px 16px; border-radius:12px; }
+    .modal h2{ font-size:22px; }
+    .modal .sub{ font-size:12px; margin-bottom:16px; }
+  }
 
   .detail-rows{ display:flex; flex-direction:column; gap:2px; margin:18px 0; }
-  .detail-rows div{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed rgba(17,32,26,0.2); font-size:13.5px; }
-  .detail-rows div span:first-child{ color:#5a6a5f; font-family:var(--mono); font-size:11px; text-transform:uppercase; }
+  .detail-rows div{ display:flex; justify-content:space-between; padding:9px 0; border-bottom:1px dashed rgba(17,32,26,0.2); font-size:13.5px; gap:8px; }
+  .detail-rows div span:first-child{ color:#5a6a5f; font-family:var(--mono); font-size:11px; text-transform:uppercase; flex-shrink:0; }
 
   /* ---------- claims drawer ---------- */
   .drawer{ position:fixed; top:0; right:0; height:100%; width:100%; max-width:400px; background:var(--ink-soft); z-index:110; transform:translateX(100%); transition:transform .3s ease; box-shadow:-20px 0 40px rgba(0,0,0,0.4); display:flex; flex-direction:column; }
   .drawer.open{ transform:translateX(0); }
   .drawer-head{ padding:22px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; }
   .drawer-head h3{ font-family:var(--display); text-transform:uppercase; font-size:20px; color:var(--yellow); }
-  .drawer-body{ padding:18px 24px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; }
+  .drawer-body{ padding:18px 24px; overflow-y:auto; flex:1; display:flex; flex-direction:column; gap:12px; -webkit-overflow-scrolling:touch; }
   .claim-item{ background:var(--paper); color:var(--ink); border-radius:8px; padding:14px 16px; }
   .claim-item .n{ font-weight:800; font-size:14px; text-transform:uppercase; }
   .claim-item .m{ font-family:var(--mono); font-size:11px; color:#5a6a5f; margin-top:4px; }
   .drawer-empty{ color:var(--paper-dim); font-size:13px; padding-top:20px; text-align:center; }
+  @media(max-width:480px){
+    .drawer{ max-width:100%; }
+    .drawer-head{ padding:16px; }
+    .drawer-body{ padding:14px 16px; }
+  }
 
   /* ---------- toast ---------- */
-  #toastHost{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:8px; align-items:center; }
-  .toast{ background:var(--yellow); color:var(--ink); font-family:var(--mono); font-size:12.5px; text-transform:uppercase; letter-spacing:0.03em; padding:12px 20px; border-radius:100px; box-shadow:0 10px 24px rgba(0,0,0,0.35); animation:toastIn .25s ease; }
+  #toastHost{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:200; display:flex; flex-direction:column; gap:8px; align-items:center; width:90%; max-width:400px; pointer-events:none; }
+  .toast{ background:var(--yellow); color:var(--ink); font-family:var(--mono); font-size:12.5px; text-transform:uppercase; letter-spacing:0.03em; padding:12px 20px; border-radius:100px; box-shadow:0 10px 24px rgba(0,0,0,0.35); animation:toastIn .25s ease; text-align:center; word-break:break-word; }
   @keyframes toastIn{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+  @media(max-width:480px){
+    #toastHost{ bottom:16px; }
+    .toast{ font-size:11.5px; padding:10px 16px; }
+  }
 
   .user-chip{ display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:12px; color:var(--yellow); }
   .auth-tabs{ display:flex; gap:4px; background:var(--paper-dim); border-radius:100px; padding:4px; margin-bottom:20px; }
-  .auth-tab{ flex:1; border:none; background:transparent; color:#5a6a5f; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; padding:9px 12px; border-radius:100px; }
+  .auth-tab{ flex:1; border:none; background:transparent; color:#5a6a5f; font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em; padding:9px 12px; border-radius:100px; min-height:44px; display:flex; align-items:center; justify-content:center; }
   .auth-tab.active{ background:var(--ink); color:var(--paper); font-weight:600; }
   .auth-error{ background:rgba(228,87,61,0.12); border:1px solid var(--red); color:#a5311d; font-size:12.5px; border-radius:8px; padding:10px 12px; margin-top:4px; display:none; }
   .auth-error.show{ display:block; }
   .auth-form{ display:flex; flex-direction:column; gap:14px; }
+  .auth-form input{ min-height:44px; font-size:15px; }
 
   :focus-visible{ outline:2px solid var(--yellow); outline-offset:2px; }
   ::selection{ background:var(--yellow); color:var(--ink); }
 
   @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } html{ scroll-behavior:auto; } }
+
+  /* ---------- filter pills & live timers ---------- */
+  .filter-pills{ display:flex; gap:8px; overflow-x:auto; padding:4px 0 14px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .filter-pills::-webkit-scrollbar{ display:none; }
+  .pill{
+    font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.04em;
+    padding:8px 14px; border-radius:100px; border:1px solid var(--line); background:var(--ink-soft);
+    color:var(--paper-dim); white-space:nowrap; cursor:pointer; transition:.2s; flex-shrink:0; min-height:36px;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .pill:hover, .pill.active{ background:var(--yellow); color:var(--ink); border-color:var(--yellow); font-weight:600; }
+  
+  .live-timer{
+    display:inline-flex; align-items:center; gap:4px; font-family:var(--mono); font-size:10.5px;
+    background:rgba(228,87,61,0.15); color:var(--red); border:1px solid rgba(228,87,61,0.3);
+    padding:2px 8px; border-radius:100px; margin-top:4px; animation:timerPulse 2s infinite;
+  }
+  @keyframes timerPulse{ 0%,100%{ opacity:1; } 50%{ opacity:0.65; } }
+
+  .pass-btn{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.04em;
+    padding:6px 12px; border-radius:100px; background:var(--yellow); color:var(--ink);
+    border:none; cursor:pointer; margin-top:8px; display:inline-flex; align-items:center; gap:6px; font-weight:600;
+  }
+  .delete-item-btn{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; color:var(--red);
+    background:rgba(228,87,61,0.1); border:1px solid rgba(228,87,61,0.3); padding:4px 10px;
+    border-radius:6px; cursor:pointer; margin-top:6px; transition:.2s;
+  }
+  .delete-item-btn:hover{ background:var(--red); color:#fff; }
+
+  /* ---------- global mobile touch & text ---------- */
+  @media(max-width:680px){
+    input,select,textarea{ min-height:44px; font-size:16px; }
+    select{ -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%2311201A' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:32px; }
+  }
+
+  /* ---------- barcode scanner ---------- */
+  .scan-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:11.5px; text-transform:uppercase; letter-spacing:0.05em;
+    background:rgba(228,87,61,0.08); border:1px dashed var(--red); color:var(--red);
+    border-radius:8px; padding:10px 14px; cursor:pointer; transition:.2s;
+    width:100%; justify-content:center; min-height:44px; margin-top:4px;
+  }
+  .scan-btn:hover{ background:rgba(228,87,61,0.16); }
+  .scan-btn svg{ width:18px; height:18px; flex-shrink:0; }
+
+  .scanner-overlay{
+    position:fixed; inset:0; background:rgba(9,15,12,0.92); backdrop-filter:blur(4px);
+    display:none; flex-direction:column; align-items:center; justify-content:center;
+    z-index:150; padding:20px;
+  }
+  .scanner-overlay.open{ display:flex; }
+  .scanner-box{
+    width:100%; max-width:400px; background:var(--ink-soft); border-radius:16px;
+    overflow:hidden; box-shadow:0 30px 60px rgba(0,0,0,0.6);
+  }
+  .scanner-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px; border-bottom:1px solid var(--line);
+  }
+  .scanner-header h3{
+    font-family:var(--display); text-transform:uppercase; font-size:18px; color:var(--yellow);
+  }
+  .scanner-close{
+    background:none; border:none; color:var(--paper-dim); font-size:20px;
+    min-width:44px; min-height:44px; display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  #scannerReader{
+    width:100%; aspect-ratio:1; background:#000;
+  }
+  #scannerReader video{ border-radius:0 !important; }
+  .scanner-status{
+    padding:14px 20px; text-align:center;
+    font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--paper-dim);
+  }
+  .scanner-status.found{ color:var(--green); }
+  .scanner-status.error{ color:var(--red); }
+  .scanner-hint{
+    padding:0 20px 16px; text-align:center;
+    font-family:var(--mono); font-size:10.5px; color:var(--paper-dim); opacity:0.7;
+  }
 </style>
 </head>
 <body>
@@ -261,11 +448,15 @@
 <header>
   <nav class="nav wrap" style="padding-left:0; padding-right:0;">
     <div class="logo">Crumbz</div>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
     <div class="tabs" role="tablist">
       <button class="tab-btn active" data-tab="marketplace">Marketplace</button>
       <button class="tab-btn" data-tab="about">About</button>
     </div>
     <div class="nav-actions">
+      <button class="btn" id="myListingsBtn" style="display:none;">My Listings (<span id="myListingsCount">0</span>)</button>
       <button class="btn" id="claimsBtn">My Claims (<span id="claimsCount">0</span>)</button>
       <button class="btn primary" id="openListBtn">+ List an item</button>
       <button class="btn" id="signInBtn">Sign in</button>
@@ -301,6 +492,19 @@
         <option value="newest">Sort: Newest listed</option>
       </select>
       <button class="toggle-chip" id="donationToggle"><input type="checkbox" id="donationCheckbox">Donations only</button>
+    </div>
+
+    <!-- Quick Filter Pills -->
+    <div class="filter-pills" id="filterPills">
+      <button class="pill active" data-pill="all">✨ All Items</button>
+      <button class="pill" data-pill="today">⚡ Expiring Today</button>
+      <button class="pill" data-pill="donations">🎁 Free Donations</button>
+      <button class="pill" data-pill="under50">🏷️ Under ₹50</button>
+      <button class="pill" data-pill="Bakery">🍞 Bakery</button>
+      <button class="pill" data-pill="Dairy & Eggs">🥛 Dairy & Eggs</button>
+      <button class="pill" data-pill="Packaged Snacks">🍿 Snacks</button>
+      <button class="pill" data-pill="Beverages">🥤 Beverages</button>
+      <button class="pill" data-pill="Staples & Grains">🍚 Staples</button>
     </div>
 
     <div class="result-row">
@@ -396,10 +600,43 @@
       <div class="form-grid">
         <div class="full"><label>Item name</label><input type="text" id="fName" required placeholder="e.g. Whole wheat bread, 400g"></div>
         <div class="full">
-          <label>Photo (optional)</label>
+          <button type="button" class="scan-btn" id="scanBarcodeBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/>
+              <path d="M7 8v8M12 7v10M17 8v8"/>
+            </svg>
+            Scan barcode to auto-fill
+          </button>
+        </div>
+        <div class="full">
+          <label>Product photo (optional)</label>
           <div style="display:flex; gap:12px; align-items:center;">
-            <div id="fImagePreview" class="item-thumb" style="width:64px; height:64px; border-radius:10px; flex:0 0 64px; border:1px solid rgba(17,32,26,0.15); background-size:cover; background-position:center;"></div>
-            <input type="file" id="fImage" accept="image/*" style="flex:1;">
+            <div id="fImagePreview" class="item-thumb" style="width:64px; height:64px; border-radius:10px; flex:0 0 64px; border:1px solid rgba(17,32,26,0.15); background-size:cover; background-position:center; background-color:var(--ink-soft2); display:flex; align-items:center; justify-content:center; color:var(--paper-dim);">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+            <div style="display:flex; gap:8px; flex:1; flex-wrap:wrap;">
+              <label for="fImageCamera" class="btn" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px; cursor:pointer; background:var(--ink-soft2); font-size:12px; min-width:110px; text-transform:none;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                Take photo
+              </label>
+              <input type="file" id="fImageCamera" accept="image/*" capture="environment" style="display:none;">
+
+              <label for="fImageGallery" class="btn" style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:10px; cursor:pointer; font-size:12px; min-width:110px; text-transform:none;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                Choose file
+              </label>
+              <input type="file" id="fImageGallery" accept="image/*" style="display:none;">
+            </div>
           </div>
         </div>
         <div style="display:flex; gap:10px; align-items:flex-end;">
@@ -409,7 +646,20 @@
         <div><label>Lister type</label><select id="fListerType"><option>Supermarket</option><option>Vendor</option><option>Individual</option></select></div>
         <div><label>Quantity</label><input type="number" id="fQty" min="1" value="1" required></div>
         <div><label>Unit</label><select id="fUnit"><option>pcs</option><option>kg</option><option>g</option><option>L</option><option>pack</option></select></div>
-        <div><label>Expiry date</label><input type="date" id="fExpiry" required></div>
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <label style="margin:0;">Expiry date</label>
+            <button type="button" id="scanExpiryBtn" class="btn" style="padding:2px 10px; font-size:10px; border-radius:4px; gap:4px; display:inline-flex; align-items:center; background:var(--ink-soft2);">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+              Scan date label
+            </button>
+          </div>
+          <input type="date" id="fExpiry" required>
+          <input type="file" id="expiryFileInput" accept="image/*" capture="environment" style="display:none;">
+        </div>
         <div><label>Outlet</label><select id="fOutlet"></select></div>
         <div class="full">
           <label>Listing type</label>
@@ -452,7 +702,95 @@
     </div>
     <div class="modal-actions">
       <button type="button" class="btn" id="cancelDetailBtn">Cancel</button>
-      <button type="button" class="btn dark" id="confirmClaimBtn">Confirm claim</button>
+      <button type="button" class="btn primary" id="confirmClaimBtn">Proceed to Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT & PAYMENT MODAL -->
+<div class="overlay" id="checkoutOverlay">
+  <div class="modal" style="max-width:440px;">
+    <button class="modal-close" id="closeCheckoutModal" aria-label="Close">✕</button>
+    <h2>Checkout & Payment</h2>
+    <p class="sub">Review your rescue order and complete payment.</p>
+    
+    <div style="background:var(--ink-soft2); border-radius:12px; padding:14px; margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+        <span style="font-weight:600;" id="coItemName">Item Name</span>
+        <span id="coItemPrice" style="font-family:var(--mono);">₹0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:12.5px; color:var(--paper-dim); margin-bottom:4px;">
+        <span>Fulfillment Fee (<span id="coFulfilType">Pickup</span>)</span>
+        <span id="coDeliveryFee" style="font-family:var(--mono);">₹0</span>
+      </div>
+      <div style="display:flex; justify-content:space-between; font-size:12.5px; color:var(--green); margin-bottom:8px;">
+        <span>Surplus Food Waste Saved</span>
+        <span id="coSavingsTag" style="font-family:var(--mono);">₹0</span>
+      </div>
+      <div style="border-top:1px dashed var(--line); padding-top:8px; display:flex; justify-content:space-between; font-weight:700; font-family:var(--mono); font-size:15px; color:var(--yellow);">
+        <span>Total Payable</span>
+        <span id="coTotalPayable">₹0</span>
+      </div>
+    </div>
+
+    <form id="checkoutForm">
+      <div class="form-grid" style="gap:12px; margin-bottom:16px;">
+        <div class="full">
+          <label>Contact Phone Number</label>
+          <input type="tel" id="coPhone" required placeholder="+91 98765 43210" pattern="[0-9\+\s\-]{8,15}">
+        </div>
+        <div id="coAddressGroup" style="display:none;" class="full">
+          <label>Delivery Address</label>
+          <textarea id="coAddress" rows="2" placeholder="House/Flat no, street, landmark, pincode"></textarea>
+        </div>
+        <div class="full">
+          <label>Payment Method</label>
+          <div class="radio-group" id="coPayMethods">
+            <div class="radio-opt selected" data-pay="upi">⚡ UPI (GPay / PhonePe)</div>
+            <div class="radio-opt" data-pay="card">💳 Card</div>
+            <div class="radio-opt" data-pay="cash">💵 Pay at Store / COD</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button type="button" class="btn" id="cancelCheckoutBtn">Back</button>
+        <button type="submit" class="btn primary" id="paySubmitBtn" style="flex:1;">Pay & Complete Order 🔒</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ORDER SUCCESS & INVOICE RECEIPT MODAL -->
+<div class="overlay" id="orderSuccessOverlay">
+  <div class="modal" style="max-width:440px; text-align:center;">
+    <div style="width:64px; height:64px; background:rgba(123,174,127,0.2); border:2px solid var(--green); border-radius:100px; display:inline-flex; align-items:center; justify-content:center; color:var(--green); margin-bottom:12px;">
+      <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div style="font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:2px;">Order Confirmed!</div>
+    <h2 style="font-size:22px; margin-bottom:4px;">Food Rescued Successfully 🎉</h2>
+    <p class="sub" id="receiptOrderId" style="margin-bottom:16px;">Order #ORD-89A12</p>
+
+    <div style="background:var(--ink-soft2); border-radius:14px; padding:16px; text-align:left; margin-bottom:16px; border:1px solid var(--line);">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-weight:600;">
+        <span id="receiptItemName">Item Name</span>
+        <span id="receiptPaidTotal" style="color:var(--yellow); font-family:var(--mono);">₹0</span>
+      </div>
+      <div style="font-size:12px; color:var(--paper-dim); line-height:1.5; margin-bottom:12px;" id="receiptDetails">
+        Status: Paid via UPI · Pickup at Central Outlet
+      </div>
+      
+      <div style="background:#fff; padding:12px; border-radius:10px; text-align:center; border:1px solid var(--ink);">
+        <svg id="receiptQrSvg" width="120" height="120" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div id="receiptPassCode" style="font-family:var(--mono); font-size:14px; font-weight:700; color:var(--ink); margin-top:6px; letter-spacing:0.05em;">CRUMBZ-PASS-89A1</div>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="flex-direction:column; gap:8px;">
+      <button type="button" class="btn primary" id="viewClaimsAfterOrderBtn" style="width:100%;">View Order in My Claims 🎫</button>
+      <button type="button" class="btn" id="closeSuccessBtn" style="width:100%;">Return to Marketplace</button>
     </div>
   </div>
 </div>
@@ -491,8 +829,66 @@
   <div class="drawer-body" id="drawerBody"></div>
 </div>
 
+<!-- MY LISTINGS DRAWER -->
+<div class="drawer" id="myListingsDrawer">
+  <div class="drawer-head"><h3>My Active Listings</h3><button class="modal-close" id="closeMyListingsDrawer" style="position:static; font-size:18px;">✕</button></div>
+  <div class="drawer-body" id="myListingsBody"></div>
+</div>
+
+<!-- CLAIM PASS / QR CODE MODAL -->
+<div class="overlay" id="claimPassOverlay">
+  <div class="modal" style="max-width:380px; text-align:center;">
+    <button class="modal-close" id="closeClaimPassModal" aria-label="Close">✕</button>
+    <div style="font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:4px;">Official Rescue Pass</div>
+    <h2 id="passItemName" style="font-size:20px; margin-bottom:4px;">Item Name</h2>
+    <p class="sub" id="passOutletName" style="margin-bottom:16px;">Crumbz Outlet — Central</p>
+    
+    <div style="background:#fff; padding:16px; border-radius:14px; display:inline-block; margin-bottom:16px; border:2px solid var(--ink);">
+      <svg id="passQrSvg" width="160" height="160" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- SVG QR code pattern generated dynamically -->
+      </svg>
+    </div>
+
+    <div style="background:var(--ink-soft2); border-radius:10px; padding:12px; margin-bottom:16px;">
+      <div style="font-family:var(--mono); font-size:10.5px; text-transform:uppercase; color:var(--paper-dim);">Pass Verification Code</div>
+      <div id="passCodeText" style="font-family:var(--mono); font-size:18px; font-weight:700; color:var(--yellow); letter-spacing:0.1em; margin-top:2px;">CRUMBZ-PASS-89A1</div>
+    </div>
+
+    <div style="font-size:12px; color:var(--paper-dim); line-height:1.4;" id="passInstructionText">
+      Show this QR pass or code to the store associate at outlet pickup counter to claim your rescue.
+    </div>
+  </div>
+</div>
+
 <div id="toastHost"></div>
 
+<!-- BARCODE SCANNER OVERLAY -->
+<div class="scanner-overlay" id="scannerOverlay">
+  <div class="scanner-box">
+    <div class="scanner-header">
+      <h3>Scan Barcode</h3>
+      <button class="scanner-close" id="closeScannerBtn" aria-label="Close scanner">✕</button>
+    </div>
+    <div id="scannerReader"></div>
+    <div class="scanner-status" id="scannerStatus">Point your camera at a barcode on the product packaging</div>
+    
+    <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--line); text-align:center;">
+      <label for="scannerFileInput" class="btn" style="display:inline-flex; align-items:center; gap:8px; width:100%; justify-content:center; cursor:pointer; background:var(--ink-soft2);">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+          <circle cx="12" cy="13" r="4"/>
+        </svg>
+        Snap photo or upload image
+      </label>
+      <input type="file" id="scannerFileInput" accept="image/*" capture="environment" style="display:none;">
+    </div>
+
+    <div class="scanner-hint" style="margin-top:10px;">EAN-13, UPC-A, and standard food barcodes are supported</div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 (function(){
   var CATEGORIES = ["Bakery","Dairy & Eggs","Packaged Snacks","Beverages","Staples & Grains","Frozen Foods","Fresh Produce","Ready-to-eat"];
@@ -527,7 +923,7 @@
   function categoryTint(cat){ return CATEGORY_TINTS[cat] || "#E7E0C9"; }
 
   var state = {
-    listings: [], claims: [], userTouchedPrice:false, listMode:"sell", fulfilMode:"pickup", activeItemId:null,
+    listings: [], claims: [], myListings: [], userTouchedPrice:false, listMode:"sell", fulfilMode:"pickup", activeItemId:null, activePill:"all",
     token: localStorage.getItem("crumbz_token") || null,
     user: null,
     authMode: "login",
@@ -540,14 +936,27 @@
     options = options || {};
     var headers = Object.assign({ "Content-Type":"application/json" }, options.headers || {});
     if (state.token) headers["Authorization"] = "Bearer " + state.token;
-    var res = await fetch(path, {
-      method: options.method || "GET",
-      headers: headers,
-      body: options.body ? JSON.stringify(options.body) : undefined
-    });
+    var url = path.startsWith("http") ? path : (location.origin + path);
+    var res;
+    try {
+      res = await fetch(url, {
+        method: options.method || "GET",
+        headers: headers,
+        body: options.body ? JSON.stringify(options.body) : undefined
+      });
+    } catch(netErr) {
+      console.error("API fetch error:", netErr);
+      throw new Error("Network error — check connection to " + location.host);
+    }
     var data = null;
     try { data = await res.json(); } catch(e){ data = null; }
     if (!res.ok){
+      if (res.status === 401) {
+        setToken(null);
+        state.user = null;
+        renderAuthUI();
+        openAuth("login");
+      }
       var err = new Error((data && data.error) || ("Request failed (" + res.status + ")"));
       err.status = res.status;
       throw err;
@@ -649,6 +1058,13 @@
     if (out) list = list.filter(function(l){ return l.outlet === out; });
     if (donationsOnly) list = list.filter(function(l){ return l.mode === "donate"; });
 
+    if (state.activePill && state.activePill !== "all") {
+      if (state.activePill === "today") list = list.filter(function(l){ return daysUntil(l.expiry) <= 0; });
+      else if (state.activePill === "donations") list = list.filter(function(l){ return l.mode === "donate"; });
+      else if (state.activePill === "under50") list = list.filter(function(l){ return l.mode === "sell" && l.price <= 50; });
+      else list = list.filter(function(l){ return l.category === state.activePill; });
+    }
+
     list.sort(function(a,b){
       if (sort === "expiry") return daysUntil(a.expiry) - daysUntil(b.expiry);
       if (sort === "discount"){
@@ -683,10 +1099,15 @@
       var thumbInner = l.image
         ? '<img src="'+l.image+'" alt="" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;">'
         : categoryIcon(l.category);
+      var timerHtml = days <= 1
+        ? '<div class="live-timer" data-expiry="'+l.expiry+'">⏳ <span class="timer-val">Calculating...</span></div>'
+        : '';
+
       return '<button class="item-card" data-id="'+l.id+'">' +
         '<div class="item-thumb" style="background:'+categoryTint(l.category)+'; position:relative; overflow:hidden;">' + thumbInner + badge +
         '<span class="thumb-tag">'+outletName(l.outlet).replace("Crumbz Outlet — ","")+'</span></div>' +
         '<div class="item-top"><span class="item-cat">'+l.category+'</span><span class="urgency '+uc+'">'+urgencyLabel(days)+'</span></div>' +
+        timerHtml +
         '<div class="item-name">'+l.name+'</div>' +
         '<div class="item-qty">'+l.qty+' '+l.unit+' · '+l.lister+' · '+outletName(l.outlet)+'</div>' +
         '<div class="item-price-row">'+priceHtml+'<span class="claim-btn">'+(l.mode==="donate"?"Claim":"Buy")+'</span></div>' +
@@ -718,8 +1139,100 @@
     }
     body.innerHTML = state.claims.slice().reverse().map(function(c){
       return '<div class="claim-item"><div class="n">'+c.name+'</div><div class="m">'+
-        (c.mode==="donate"?"Donation":"₹"+c.price)+' · '+c.fulfil+' · '+outletName(c.outlet)+'<br>Claimed '+new Date(c.claimedAt).toLocaleString()+'</div></div>';
+        (c.mode==="donate"?"Donation":"₹"+c.price)+' · '+c.fulfil+' · '+outletName(c.outlet)+'<br>Claimed '+new Date(c.claimedAt).toLocaleString()+'</div>'+
+        '<button class="pass-btn" data-pass-id="'+c.id+'">🎫 View Rescue Pass & QR</button>'+
+        '</div>';
     }).join("");
+
+    body.querySelectorAll(".pass-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        openClaimPass(btn.getAttribute("data-pass-id"));
+      });
+    });
+  }
+
+  // ---------- My Listings Seller Dashboard ----------
+  async function fetchMyListings(){
+    if (!state.token) return;
+    try {
+      var data = await api("/api/my-listings");
+      state.myListings = data.listings;
+      document.getElementById("myListingsCount").textContent = state.myListings.length;
+      renderMyListings();
+    } catch(e){}
+  }
+
+  function renderMyListings(){
+    var body = document.getElementById("myListingsBody");
+    if (!state.myListings || !state.myListings.length){
+      body.innerHTML = '<div class="drawer-empty">You haven\'t listed any items yet. Tap "+ List an item" to post surplus food!</div>';
+      return;
+    }
+    body.innerHTML = state.myListings.map(function(item){
+      var days = daysUntil(item.expiry);
+      var statusBadge = item.status === "claimed"
+        ? '<span style="color:var(--green); font-weight:600;">CLAIMED</span>'
+        : '<span style="color:var(--yellow); font-weight:600;">ACTIVE</span>';
+      return '<div class="claim-item" style="display:flex; justify-content:space-between; align-items:center;">' +
+        '<div>' +
+          '<div class="n">' + item.name + '</div>' +
+          '<div class="m">' + item.category + ' · ' + statusBadge + '<br>Expiry: ' + urgencyLabel(days) + '</div>' +
+        '</div>' +
+        '<button class="delete-item-btn" data-delete-id="' + item.id + '">🗑️ Delete</button>' +
+      '</div>';
+    }).join("");
+
+    body.querySelectorAll(".delete-item-btn").forEach(function(btn){
+      btn.addEventListener("click", async function(){
+        var id = btn.getAttribute("data-delete-id");
+        if (!confirm("Are you sure you want to delete this listing?")) return;
+        try {
+          await api("/api/listings/" + id, { method: "DELETE" });
+          toast("Listing deleted");
+          state.listings = await fetchListings();
+          await fetchMyListings();
+          renderGrid(); renderStats();
+        } catch(err){
+          toast(err.message || "Could not delete listing");
+        }
+      });
+    });
+  }
+
+  // ---------- QR Code SVG Generator ----------
+  function generateQrSvg(codeStr) {
+    var svg = '<rect width="100" height="100" fill="#ffffff"/>';
+    svg += '<rect x="10" y="10" width="25" height="25" fill="#11201A"/><rect x="14" y="14" width="17" height="17" fill="#ffffff"/><rect x="18" y="18" width="9" height="9" fill="#11201A"/>';
+    svg += '<rect x="65" y="10" width="25" height="25" fill="#11201A"/><rect x="69" y="14" width="17" height="17" fill="#ffffff"/><rect x="73" y="18" width="9" height="9" fill="#11201A"/>';
+    svg += '<rect x="10" y="65" width="25" height="25" fill="#11201A"/><rect x="14" y="69" width="17" height="17" fill="#ffffff"/><rect x="18" y="73" width="9" height="9" fill="#11201A"/>';
+    var hash = 0;
+    for (var i = 0; i < codeStr.length; i++) hash = (hash << 5) - hash + codeStr.charCodeAt(i);
+    for (var r = 0; r < 9; r++) {
+      for (var c = 0; c < 9; c++) {
+        var x = 10 + c * 9;
+        var y = 10 + r * 9;
+        if ((r < 3 && c < 3) || (r < 3 && c > 5) || (r > 5 && c < 3)) continue;
+        var bit = (Math.abs(hash ^ (r * 17 + c * 31))) % 3 === 0;
+        if (bit) svg += '<rect x="' + x + '" y="' + y + '" width="7" height="7" rx="1.5" fill="#11201A"/>';
+      }
+    }
+    return svg;
+  }
+
+  function openClaimPass(claimId){
+    var claim = state.claims.find(function(c){ return c.id === claimId; });
+    if (!claim) return;
+    document.getElementById("passItemName").textContent = claim.name;
+    document.getElementById("passOutletName").textContent = outletName(claim.outlet);
+    var passCode = "CRUMBZ-" + claim.id.toUpperCase().slice(-6);
+    document.getElementById("passCodeText").textContent = passCode;
+    document.getElementById("passQrSvg").innerHTML = generateQrSvg(passCode);
+    if (claim.fulfil === "delivery"){
+      document.getElementById("passInstructionText").textContent = "Delivery Partner Assigned: Show this code to courier at your doorstep.";
+    } else {
+      document.getElementById("passInstructionText").textContent = "Show this QR pass or code to the store associate at outlet pickup counter to claim your rescue.";
+    }
+    document.getElementById("claimPassOverlay").classList.add("open");
   }
 
   // ---------- list an item ----------
@@ -778,23 +1291,22 @@
   document.getElementById("fOriginal").addEventListener("input", updateAiBox);
   document.getElementById("fPrice").addEventListener("input", function(){ state.userTouchedPrice = true; });
 
-  document.getElementById("fImage").addEventListener("change", function(e){
-    var file = e.target.files && e.target.files[0];
+  function handleProductImageFile(file){
     if (!file) return;
-    if (!file.type.startsWith("image/")){ toast("Please choose an image file"); e.target.value = ""; return; }
-    if (file.size > 8 * 1024 * 1024){ toast("Image is too large (max 8MB)"); e.target.value = ""; return; }
+    if (!file.type.startsWith("image/")){ toast("Please choose an image file"); return; }
+    if (file.size > 8 * 1024 * 1024){ toast("Image is too large (max 8MB)"); return; }
     var reader = new FileReader();
     reader.onload = function(ev){
       var img = new Image();
       img.onload = function(){
-        var maxDim = 900;
+        var maxDim = 600;
         var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
         var canvas = document.createElement("canvas");
         canvas.width = Math.round(img.width * scale);
         canvas.height = Math.round(img.height * scale);
         var ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        var dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        var dataUrl = canvas.toDataURL("image/jpeg", 0.75);
         state.pendingImage = dataUrl;
         var preview = document.getElementById("fImagePreview");
         preview.style.backgroundImage = "url('" + dataUrl + "')";
@@ -803,6 +1315,16 @@
       img.src = ev.target.result;
     };
     reader.readAsDataURL(file);
+  }
+
+  ["fImageCamera", "fImageGallery"].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("change", function(e){
+        var file = e.target.files && e.target.files[0];
+        handleProductImageFile(file);
+      });
+    }
   });
 
   document.getElementById("listForm").addEventListener("submit", async function(e){
@@ -838,12 +1360,13 @@
     }
   });
 
-  // ---------- claim flow ----------
+  // ---------- full buying & checkout flow ----------
   function openDetail(id){
     var item = state.listings.find(function(l){ return l.id === id; });
     if (!item) return;
     state.activeItemId = id;
     state.fulfilMode = "pickup";
+    state.payMethod = "upi";
     document.querySelectorAll('.radio-opt[data-fulfil]').forEach(function(r){ r.classList.toggle("selected", r.getAttribute("data-fulfil")==="pickup"); });
 
     var days = daysUntil(item.expiry);
@@ -862,9 +1385,13 @@
       '<div><span>Listed by</span><span>'+item.lister+'</span></div>' +
       '<div><span>Expiry</span><span>'+urgencyLabel(days)+'</span></div>' +
       '<div><span>Price</span><span>'+priceLine+'</span></div>';
+    
+    var btn = document.getElementById("confirmClaimBtn");
+    btn.textContent = item.mode === "donate" ? "Claim Free Donation 🎉" : "Proceed to Checkout →";
     updateFulfilNote(item);
     document.getElementById("detailOverlay").classList.add("open");
   }
+
   function updateFulfilNote(item){
     var note = document.getElementById("fulfilNote");
     var outlet = OUTLETS.find(function(o){ return o.id === item.outlet; });
@@ -874,6 +1401,7 @@
       note.textContent = "A delivery partner covering the " + outlet.radius + " radius from " + outlet.name + " will be assigned and will contact you.";
     }
   }
+
   document.querySelectorAll('.radio-opt[data-fulfil]').forEach(function(r){
     r.addEventListener("click", function(){
       document.querySelectorAll('.radio-opt[data-fulfil]').forEach(function(x){ x.classList.remove("selected"); });
@@ -883,10 +1411,11 @@
       if (item) updateFulfilNote(item);
     });
   });
+
   document.getElementById("closeDetailModal").addEventListener("click", function(){ document.getElementById("detailOverlay").classList.remove("open"); });
   document.getElementById("cancelDetailBtn").addEventListener("click", function(){ document.getElementById("detailOverlay").classList.remove("open"); });
 
-  document.getElementById("confirmClaimBtn").addEventListener("click", async function(){
+  document.getElementById("confirmClaimBtn").addEventListener("click", function(){
     var item = state.listings.find(function(l){ return l.id === state.activeItemId; });
     if (!item) return;
     if (!state.user){
@@ -895,27 +1424,93 @@
       openAuth("login");
       return;
     }
-    var btn = this;
-    btn.disabled = true;
-    try{
-      var data = await api("/api/listings/" + item.id + "/claim", { method:"POST", body:{ fulfil: state.fulfilMode } });
+    document.getElementById("detailOverlay").classList.remove("open");
+    openCheckout(item);
+  });
+
+  function openCheckout(item){
+    state.activeItem = item;
+    var isDonate = item.mode === "donate";
+    var isDelivery = state.fulfilMode === "delivery";
+    var deliveryFee = (isDelivery && !isDonate) ? 25 : 0;
+    var totalPayable = isDonate ? 0 : (item.price + deliveryFee);
+    var savings = isDonate ? item.original : Math.max(0, item.original - item.price);
+
+    document.getElementById("coItemName").textContent = item.name;
+    document.getElementById("coItemPrice").textContent = isDonate ? "FREE" : ("₹" + item.price);
+    document.getElementById("coFulfilType").textContent = isDelivery ? "Home Delivery" : "Outlet Pickup";
+    document.getElementById("coDeliveryFee").textContent = deliveryFee > 0 ? ("₹" + deliveryFee) : "FREE";
+    document.getElementById("coSavingsTag").textContent = "₹" + savings;
+    document.getElementById("coTotalPayable").textContent = isDonate ? "FREE" : ("₹" + totalPayable);
+
+    document.getElementById("coAddressGroup").style.display = isDelivery ? "block" : "none";
+    document.getElementById("coAddress").required = isDelivery;
+
+    document.getElementById("paySubmitBtn").textContent = isDonate
+      ? "Claim Donation 🎉"
+      : ("Pay ₹" + totalPayable + " & Complete Order 🔒");
+
+    document.getElementById("checkoutOverlay").classList.add("open");
+  }
+
+  document.querySelectorAll('#coPayMethods .radio-opt').forEach(function(r){
+    r.addEventListener("click", function(){
+      document.querySelectorAll('#coPayMethods .radio-opt').forEach(function(x){ x.classList.remove("selected"); });
+      r.classList.add("selected");
+      state.payMethod = r.getAttribute("data-pay");
+    });
+  });
+
+  document.getElementById("closeCheckoutModal").addEventListener("click", function(){ document.getElementById("checkoutOverlay").classList.remove("open"); });
+  document.getElementById("cancelCheckoutBtn").addEventListener("click", function(){ document.getElementById("checkoutOverlay").classList.remove("open"); });
+
+  document.getElementById("checkoutForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    var item = state.activeItem;
+    if (!item) return;
+    var submitBtn = document.getElementById("paySubmitBtn");
+    submitBtn.disabled = true;
+    try {
+      var payload = {
+        fulfil: state.fulfilMode,
+        phone: document.getElementById("coPhone").value.trim(),
+        address: document.getElementById("coAddress").value.trim(),
+        paymentMethod: state.payMethod || "upi"
+      };
+      var data = await api("/api/listings/" + item.id + "/claim", { method: "POST", body: payload });
       var idx = state.listings.findIndex(function(l){ return l.id === item.id; });
       if (idx > -1) state.listings[idx] = data.listing;
       state.claims.unshift(data.claim);
       renderClaimsCount(); renderDrawer(); renderGrid(); renderStats();
-      document.getElementById("detailOverlay").classList.remove("open");
-      toast((item.mode==="donate"?"Donation claimed: ":"Purchased: ") + item.name);
-    }catch(err){
-      toast(err.message || "Could not claim this item");
-      if (err.status === 409){
-        document.getElementById("detailOverlay").classList.remove("open");
-        var fresh = await fetchListings();
-        state.listings = fresh;
-        renderGrid(); renderStats();
-      }
-    }finally{
-      btn.disabled = false;
+      document.getElementById("checkoutOverlay").classList.remove("open");
+      openOrderSuccess(data.claim);
+    } catch(err) {
+      toast(err.message || "Could not complete order — try again");
+    } finally {
+      submitBtn.disabled = false;
     }
+  });
+
+  function openOrderSuccess(claim){
+    document.getElementById("receiptOrderId").textContent = "Order #" + claim.orderId;
+    document.getElementById("receiptItemName").textContent = claim.name;
+    document.getElementById("receiptPaidTotal").textContent = claim.mode === "donate" ? "FREE DONATION" : ("₹" + claim.totalAmount);
+    
+    var statusText = "Status: Paid via " + (claim.paymentMethod ? claim.paymentMethod.toUpperCase() : "UPI") +
+      " · " + (claim.fulfil === "delivery" ? "Home Delivery" : ("Pickup at " + outletName(claim.outlet)));
+    document.getElementById("receiptDetails").textContent = statusText;
+    
+    var passCode = claim.passCode || ("CRUMBZ-PASS-" + claim.id.slice(-6).toUpperCase());
+    document.getElementById("receiptPassCode").textContent = passCode;
+    document.getElementById("receiptQrSvg").innerHTML = generateQrSvg(passCode);
+
+    document.getElementById("orderSuccessOverlay").classList.add("open");
+  }
+
+  document.getElementById("closeSuccessBtn").addEventListener("click", function(){ document.getElementById("orderSuccessOverlay").classList.remove("open"); });
+  document.getElementById("viewClaimsAfterOrderBtn").addEventListener("click", function(){
+    document.getElementById("orderSuccessOverlay").classList.remove("open");
+    document.getElementById("claimsDrawer").classList.add("open");
   });
 
   // ---------- claims drawer open/close ----------
@@ -956,6 +1551,19 @@
     }
   });
 
+  // ---------- hamburger toggle ----------
+  document.getElementById("hamburgerBtn").addEventListener("click", function(){
+    this.classList.toggle("open");
+    document.querySelector(".nav").classList.toggle("menu-open");
+  });
+  // close mobile menu when a tab or action is clicked
+  document.querySelectorAll(".tab-btn, .nav-actions .btn, #signOutBtn").forEach(function(el){
+    el.addEventListener("click", function(){
+      document.getElementById("hamburgerBtn").classList.remove("open");
+      document.querySelector(".nav").classList.remove("menu-open");
+    });
+  });
+
   // ---------- auth UI ----------
   function openAuth(mode){
     setAuthMode(mode || "login");
@@ -987,7 +1595,11 @@
     var signedIn = !!state.user;
     document.getElementById("signInBtn").style.display = signedIn ? "none" : "";
     document.getElementById("userChip").style.display = signedIn ? "flex" : "none";
-    if (signedIn) document.getElementById("userChipName").textContent = state.user.name;
+    document.getElementById("myListingsBtn").style.display = signedIn ? "inline-flex" : "none";
+    if (signedIn) {
+      document.getElementById("userChipName").textContent = state.user.name;
+      fetchMyListings();
+    }
   }
 
   document.getElementById("loginForm").addEventListener("submit", async function(e){
@@ -1064,6 +1676,371 @@
     state.claims = await fetchClaims();
     renderGrid(); renderStats(); renderClaimsCount(); renderDrawer();
   }
+  // ---------- barcode scanner ----------
+  var scannerInstance = null;
+  var scannerRunning = false;
+
+  function openScanner(){
+    if (!state.user){ toast("Sign in to list an item"); openAuth("login"); return; }
+    document.getElementById("scannerOverlay").classList.add("open");
+    document.getElementById("scannerStatus").textContent = "Starting camera…";
+    document.getElementById("scannerStatus").className = "scanner-status";
+
+    if (typeof Html5Qrcode === 'undefined'){
+      document.getElementById("scannerStatus").textContent = "Scanner library failed to load";
+      document.getElementById("scannerStatus").className = "scanner-status error";
+      return;
+    }
+
+    scannerInstance = new Html5Qrcode("scannerReader");
+    scannerRunning = true;
+
+    scannerInstance.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: function(vw, vh){ var s = Math.min(vw, vh) * 0.7; return { width: Math.round(s), height: Math.round(s * 0.5) }; },
+        aspectRatio: 1.0, formatsToSupport: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15] },
+      function onScan(decodedText){
+        if (!scannerRunning) return;
+        scannerRunning = false;
+        document.getElementById("scannerStatus").textContent = "Barcode found: " + decodedText + " — looking up…";
+        document.getElementById("scannerStatus").className = "scanner-status found";
+        lookupBarcode(decodedText);
+      },
+      function onError(){}
+    ).then(function(){
+      document.getElementById("scannerStatus").textContent = "Point your camera at a barcode on the product packaging";
+      document.getElementById("scannerStatus").className = "scanner-status";
+    }).catch(function(err){
+      console.error("Scanner start failed", err);
+      var msg = "Camera access denied. Check Chrome permissions or use 'Snap photo' below.";
+      if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+        msg = "Camera stream blocked: Mobile Chrome requires HTTPS or localhost. Tap 'Snap photo' below to scan!";
+      }
+      document.getElementById("scannerStatus").textContent = msg;
+      document.getElementById("scannerStatus").className = "scanner-status error";
+    });
+  }
+
+  function closeScanner(){
+    scannerRunning = false;
+    if (scannerInstance){
+      scannerInstance.stop().then(function(){
+        scannerInstance.clear();
+        scannerInstance = null;
+      }).catch(function(){
+        try{ scannerInstance.clear(); } catch(e){}
+        scannerInstance = null;
+      });
+    }
+    document.getElementById("scannerOverlay").classList.remove("open");
+  }
+
+  async function lookupBarcode(code){
+    try {
+      var data = await api("/api/barcode/" + encodeURIComponent(code));
+      closeScanner();
+      if (!data.found){
+        toast("Product not found — enter details manually");
+        return;
+      }
+      // auto-fill the form
+      var displayName = data.name;
+      if (data.brand && data.name.toLowerCase().indexOf(data.brand.toLowerCase()) === -1){
+        displayName = data.name + ' — ' + data.brand;
+      }
+      if (data.rawQuantity && displayName.indexOf(data.rawQuantity) === -1){
+        displayName += ', ' + data.rawQuantity;
+      }
+      document.getElementById("fName").value = displayName;
+
+      // set category
+      if (data.category){
+        var catSelect = document.getElementById("fCategory");
+        for (var i = 0; i < catSelect.options.length; i++){
+          if (catSelect.options[i].value === data.category){
+            catSelect.selectedIndex = i;
+            updateCategoryPreview();
+            break;
+          }
+        }
+      }
+
+      // set quantity & unit
+      if (data.qty) document.getElementById("fQty").value = data.qty;
+      if (data.unit){
+        var unitSelect = document.getElementById("fUnit");
+        for (var j = 0; j < unitSelect.options.length; j++){
+          if (unitSelect.options[j].value === data.unit){
+            unitSelect.selectedIndex = j;
+            break;
+          }
+        }
+      }
+
+      toast("Found: " + (data.name || code) + (data.brand ? " — " + data.brand : ""));
+    } catch(err){
+      closeScanner();
+      toast(err.message || "Barcode lookup failed — enter details manually");
+    }
+  }
+
+  document.getElementById("scanBarcodeBtn").addEventListener("click", function(){
+    if (!state.user){ toast("Sign in to list an item"); openAuth("login"); return; }
+    openScanner();
+  });
+  document.getElementById("closeScannerBtn").addEventListener("click", closeScanner);
+  // close on overlay click outside scanner box
+  document.getElementById("scannerOverlay").addEventListener("click", function(e){
+    if (e.target === this) closeScanner();
+  });
+
+  // ---------- OCR Expiry Date Extraction ----------
+  function preprocessImageForOCR(file) {
+    return new Promise(function(resolve, reject) {
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      img.onload = function() {
+        URL.revokeObjectURL(url);
+        var canvas = document.createElement("canvas");
+        var maxDim = 1200;
+        var w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+          else { w = Math.round((w * maxDim) / h); h = maxDim; }
+        }
+        canvas.width = w;
+        canvas.height = h;
+        var ctx = canvas.getContext("2d");
+        ctx.filter = "contrast(150%) brightness(105%) grayscale(100%)";
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      img.onerror = function(err) {
+        URL.revokeObjectURL(url);
+        reject(err);
+      };
+      img.src = url;
+    });
+  }
+
+  function cleanOCRText(raw) {
+    if (!raw) return "";
+    var t = raw.toUpperCase();
+    // Fix O / Q -> 0 when adjacent to digits or slashes
+    t = t.replace(/([0-9\/\.-])[OQo]([0-9\/\.-])/g, '$10$2');
+    t = t.replace(/([0-9\/\.-])[OQo]\b/g, '$10');
+    t = t.replace(/\b[OQo]([0-9\/\.-])/g, '0$1');
+
+    // Fix I / l / | / ! -> 1 when adjacent to digits or slashes
+    t = t.replace(/([0-9\/\.-])[I1|!l]([0-9\/\.-])/g, '$11$2');
+    t = t.replace(/([0-9\/\.-])[I|!l]\b/g, '$11');
+    t = t.replace(/\b[I|!l]([0-9\/\.-])/g, '1$1');
+
+    // Fix Z -> 2 in 202x years
+    t = t.replace(/20Z([0-9])/g, '202$1');
+    t = t.replace(/Z02([0-9])/g, '202$1');
+    t = t.replace(/202S/g, '2025');
+
+    return t;
+  }
+
+  function parseExpiryFromText(text) {
+    if (!text) return null;
+    var rawClean = text.toUpperCase().replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ');
+    var clean = cleanOCRText(rawClean);
+
+    var monthMap = {
+      'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04', 'MAY': '05', 'JUN': '06',
+      'JUL': '07', 'AUG': '08', 'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12',
+      'JANUARY': '01', 'FEBRUARY': '02', 'MARCH': '03', 'APRIL': '04', 'MAY': '05', 'JUNE': '06',
+      'JULY': '07', 'AUGUST': '08', 'SEPTEMBER': '09', 'OCTOBER': '10', 'NOVEMBER': '11', 'DECEMBER': '12'
+    };
+
+    function validDate(y, m, d) {
+      var numY = parseInt(y, 10);
+      var numM = parseInt(m, 10);
+      var numD = parseInt(d, 10);
+      if (numY < 2024 || numY > 2035) return null;
+      if (numM < 1 || numM > 12) return null;
+      if (numD < 1 || numD > 31) return null;
+      return String(numY) + '-' + String(numM).padStart(2, '0') + '-' + String(numD).padStart(2, '0');
+    }
+
+    // 1. DD MMM YYYY (e.g. 24 OCT 2026, 15 OCT 26)
+    var p3 = /\b(\d{1,2})[\s\/\.-]*([A-Z]{3,9})[\s\/\.-]*(20\d{2}|\d{2})\b/i;
+    var match = clean.match(p3) || rawClean.match(p3);
+    if (match) {
+      var day = match[1].padStart(2, '0');
+      var mStr = match[2];
+      var month = monthMap[mStr];
+      if (month) {
+        var yr = match[3].length === 2 ? '20' + match[3] : match[3];
+        var res = validDate(yr, month, day);
+        if (res) return res;
+      }
+    }
+
+    // 2. Explicit keywords: EXP / BEST BEFORE / BB / USE BY / MFG
+    var pExp = /(?:EXP|BB|USE BY|BEST BEFORE|EXPIRY|DATE|MFG|PKD)[\s\:\.]*(\d{1,2})[\/\.-](\d{1,2})[\/\.-](\d{2,4})\b/i;
+    match = clean.match(pExp) || rawClean.match(pExp);
+    if (match) {
+      var d1 = match[1], m1 = match[2], y1 = match[3].length === 2 ? '20' + match[3] : match[3];
+      if (parseInt(m1, 10) > 12 && parseInt(d1, 10) <= 12) { var tmp = d1; d1 = m1; m1 = tmp; }
+      var resExp = validDate(y1, m1, d1);
+      if (resExp) return resExp;
+    }
+
+    // 3. Generic DD/MM/YYYY or DD-MM-YYYY or DD.MM.YYYY
+    var p1 = /\b(\d{1,2})[\/\.-](\d{1,2})[\/\.-](20\d{2}|\d{2})\b/i;
+    match = clean.match(p1) || rawClean.match(p1);
+    if (match) {
+      var d2 = match[1], m2 = match[2], y2 = match[3].length === 2 ? '20' + match[3] : match[3];
+      if (parseInt(m2, 10) > 12 && parseInt(d2, 10) <= 12) { var tmp2 = d2; d2 = m2; m2 = tmp2; }
+      var res1 = validDate(y2, m2, d2);
+      if (res1) return res1;
+    }
+
+    // 4. YYYY/MM/DD or YYYY-MM-DD
+    var p2 = /\b(20\d{2})[\/\.-](\d{1,2})[\/\.-](\d{1,2})\b/;
+    match = clean.match(p2) || rawClean.match(p2);
+    if (match) {
+      var res2 = validDate(match[1], match[2], match[3]);
+      if (res2) return res2;
+    }
+
+    // 5. Month/Year format (e.g. EXP 10/2026, OCT 2026)
+    var p4 = /(?:EXP|BEST BEFORE|BB|USE BY)?[\s\:\.]*([A-Z]{3,9}|\d{1,2})[\/\s\.-]+(20\d{2})\b/i;
+    match = clean.match(p4) || rawClean.match(p4);
+    if (match) {
+      var m4Str = match[1];
+      var month4 = monthMap[m4Str] || (parseInt(m4Str, 10) >= 1 && parseInt(m4Str, 10) <= 12 ? m4Str.padStart(2, '0') : null);
+      var yr4 = match[2];
+      if (month4) {
+        var lastDay = new Date(parseInt(yr4, 10), parseInt(month4, 10), 0).getDate();
+        var res4 = validDate(yr4, month4, String(lastDay));
+        if (res4) return res4;
+      }
+    }
+
+    return null;
+  }
+
+  async function processExpiryOCR(file) {
+    if (typeof Tesseract === 'undefined') {
+      toast("OCR engine loading... please try again");
+      return;
+    }
+    toast("Step 1/2: Optimizing photo for AI text scanner...");
+    try {
+      var imageInput = file;
+      try {
+        imageInput = await preprocessImageForOCR(file);
+      } catch(e) {
+        console.warn("Image preprocessing skipped:", e);
+      }
+
+      toast("Step 2/2: Scanning text on packaging...");
+      var worker = await Tesseract.createWorker('eng');
+      var ret = await worker.recognize(imageInput);
+      await worker.terminate();
+      var text = ret.data ? ret.data.text : "";
+      console.log("OCR raw output:", text);
+
+      var date = parseExpiryFromText(text);
+      if (date) {
+        document.getElementById("fExpiry").value = date;
+        toast("✨ Expiry date detected: " + date);
+        calculateSuggestedPrice();
+      } else {
+        var snippet = text.trim().substring(0, 35).replace(/[\r\n]+/g, ' ');
+        if (snippet.length) {
+          toast("Read: \"" + snippet + "...\" — could not confirm date. Please check or enter manually.");
+        } else {
+          toast("No text found in photo — take a closer picture of the date label");
+        }
+      }
+    } catch(err) {
+      console.error("OCR recognition error:", err);
+      toast("Date scan failed — please enter date manually");
+    }
+  }
+
+  document.getElementById("scanExpiryBtn").addEventListener("click", function(){
+    document.getElementById("expiryFileInput").click();
+  });
+
+  document.getElementById("expiryFileInput").addEventListener("change", function(e){
+    if (!e.target.files || !e.target.files.length) return;
+    processExpiryOCR(e.target.files[0]);
+  });
+
+  // fallback image upload scan
+  document.getElementById("scannerFileInput").addEventListener("change", function(e){
+    if (!e.target.files || !e.target.files.length) return;
+    var file = e.target.files[0];
+    document.getElementById("scannerStatus").textContent = "Reading image file…";
+    document.getElementById("scannerStatus").className = "scanner-status";
+
+    var html5QrcodeScanner = scannerInstance || new Html5Qrcode("scannerReader");
+    html5QrcodeScanner.scanFile(file, true)
+      .then(function(decodedText){
+        document.getElementById("scannerStatus").textContent = "Barcode found: " + decodedText + " — looking up…";
+        document.getElementById("scannerStatus").className = "scanner-status found";
+        lookupBarcode(decodedText);
+        // Also attempt OCR for expiry date on the same image!
+        processExpiryOCR(file);
+      })
+      .catch(function(err){
+        console.error("File scan failed", err);
+        document.getElementById("scannerStatus").textContent = "Checking photo for expiry date label…";
+        // Try OCR as fallback on the image!
+        processExpiryOCR(file);
+      });
+  });
+
+  // ---------- My Listings & Claim Pass Event Listeners ----------
+  document.getElementById("myListingsBtn").addEventListener("click", function(){
+    if (!state.user){ toast("Sign in to view your listings"); openAuth("login"); return; }
+    fetchMyListings();
+    document.getElementById("myListingsDrawer").classList.add("open");
+  });
+  document.getElementById("closeMyListingsDrawer").addEventListener("click", function(){
+    document.getElementById("myListingsDrawer").classList.remove("open");
+  });
+  document.getElementById("closeClaimPassModal").addEventListener("click", function(){
+    document.getElementById("claimPassOverlay").classList.remove("open");
+  });
+
+  // ---------- Quick Filter Pills ----------
+  document.querySelectorAll(".pill[data-pill]").forEach(function(pill){
+    pill.addEventListener("click", function(){
+      document.querySelectorAll(".pill").forEach(function(p){ p.classList.remove("active"); });
+      pill.classList.add("active");
+      state.activePill = pill.getAttribute("data-pill");
+      renderGrid();
+    });
+  });
+
+  // ---------- Live Countdown Timer Ticker ----------
+  setInterval(function(){
+    var now = new Date();
+    document.querySelectorAll(".live-timer[data-expiry]").forEach(function(el){
+      var expiryStr = el.getAttribute("data-expiry");
+      var end = new Date(expiryStr + "T23:59:59");
+      var diff = end - now;
+      if (diff <= 0) {
+        var valEl = el.querySelector(".timer-val");
+        if (valEl) valEl.textContent = "Expired";
+        return;
+      }
+      var hrs = Math.floor(diff / 3600000);
+      var mins = Math.floor((diff % 3600000) / 60000);
+      var secs = Math.floor((diff % 60000) / 1000);
+      var valEl = el.querySelector(".timer-val");
+      if (valEl) valEl.textContent = String(hrs).padStart(2,'0') + "h " + String(mins).padStart(2,'0') + "m " + String(secs).padStart(2,'0') + "s left";
+    });
+  }, 1000);
+
   init();
 })();
 </script>
