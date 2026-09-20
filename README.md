@@ -1,6 +1,6 @@
 # 🥐 Crumbz — Near-Expiry Food Marketplace
 
-> **Team Wet Biscuits** · Innovation Track · **SDG 2: Zero Hunger & SDG 12: Responsible Consumption**
+> **SDG 2: Zero Hunger & SDG 12: Responsible Consumption**
 
 Crumbz is a full-stack, mobile-responsive web marketplace that connects supermarkets, vendors, and individuals with near-expiry food stock to price-sensitive buyers and donation recipients.
 

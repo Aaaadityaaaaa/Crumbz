@@ -194,23 +194,6 @@
       "addedAt": 1787036516870,
       "ownerId": "msyb1vqm3518b1725e",
       "image": "/uploads/msybehaabc119dd9f5.jpg"
-    },
-    {
-      "id": "mu9yugwy88208612c2",
-      "name": "Monster Energy Ultra — Monster, Monster Energy, 350ml",
-      "category": "Beverages",
-      "qty": 1,
-      "unit": "L",
-      "expiry": "2028-09-29",
-      "outlet": "central",
-      "lister": "Supermarket",
-      "mode": "sell",
-      "original": 100,
-      "price": 90,
-      "status": "claimed",
-      "addedAt": 1789917804322,
-      "ownerId": "mu9wg3hg7e9604197c",
-      "image": "/uploads/mu9yugwya6acd26586.jpg"
     }
   ],
   "claims": [
