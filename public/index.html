@@ -88,27 +88,28 @@
 
   /* ---------- mobile nav ---------- */
   @media(max-width:680px){
-    .hamburger{ display:block; }
-    .nav{ padding:12px 16px; gap:12px; flex-wrap:nowrap; }
-    .nav .tabs,
-    .nav .nav-actions{
-      display:none;
-    }
-    .nav.menu-open .tabs,
-    .nav.menu-open .nav-actions{
-      display:flex;
-    }
-    .nav.menu-open{
-      flex-wrap:wrap;
+    .hamburger{ display:block; order:3; }
+    .logo{ order:1; font-size:20px; }
+    .nav{ padding:10px 14px; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .nav .tabs{
+      display:none; order:10; width:100%; justify-content:center; padding:4px; margin-top:8px;
     }
     .nav.menu-open .tabs{
-      order:10; width:100%; justify-content:center;
+      display:flex;
     }
-    .nav.menu-open .nav-actions{
-      order:11; width:100%; justify-content:center; flex-wrap:wrap;
+    .nav .nav-actions{
+      display:flex; order:2; gap:6px; align-items:center; margin-left:auto; flex-wrap:wrap;
     }
-    .tab-btn{ padding:10px 20px; font-size:12px; min-height:44px; display:flex; align-items:center; }
-    .btn{ min-height:44px; display:inline-flex; align-items:center; justify-content:center; padding:10px 16px; }
+    .nav-actions .btn{
+      padding:6px 12px; font-size:11px; min-height:36px; border-radius:100px;
+    }
+    .tab-btn{ padding:8px 14px; font-size:11px; min-height:38px; display:flex; align-items:center; }
+  }
+  @media(max-width:480px){
+    .nav{ padding:10px 12px; gap:6px; }
+    .logo{ font-size:18px; }
+    .nav-actions .btn{ padding:6px 10px; font-size:10.5px; min-height:34px; }
+    .user-chip .btn{ padding:4px 8px !important; font-size:10px !important; }
   }
 
   /* ---------- hero mini ---------- */
