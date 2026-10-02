@@ -441,6 +441,56 @@
     padding:0 20px 16px; text-align:center;
     font-family:var(--mono); font-size:10.5px; color:var(--paper-dim); opacity:0.7;
   }
+
+  /* ---------- features & impact view styles ---------- */
+  .features-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
+  @media(max-width:850px){ .features-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:520px){ .features-grid{ grid-template-columns:1fr; } }
+
+  .feature-card{
+    background:var(--ink-soft); border:1px solid var(--line); border-radius:12px; padding:22px;
+    display:flex; flex-direction:column; gap:10px; transition:.2s ease; position:relative;
+  }
+  .feature-card:hover{ border-color:rgba(255,201,60,0.4); transform:translateY(-2px); }
+  .feature-card .feat-icon{ font-size:28px; line-height:1; }
+  .feature-card h3{ font-size:16px; font-weight:700; text-transform:uppercase; color:var(--paper); }
+  .feature-card p{ font-size:13.5px; color:var(--paper-dim); line-height:1.55; flex:1; }
+  .feature-card .feat-tag{ font-family:var(--mono); font-size:10.5px; text-transform:uppercase; color:var(--green); letter-spacing:0.05em; margin-top:6px; }
+  .btn-demo{
+    font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:0.04em;
+    background:var(--yellow); color:var(--ink); border:none; border-radius:100px; padding:9px 14px;
+    font-weight:700; margin-top:10px; align-self:flex-start; min-height:38px; cursor:pointer; transition:.15s;
+  }
+  .btn-demo:hover{ background:#ffd869; transform:scale(1.02); }
+
+  .ngo-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
+  @media(max-width:850px){ .ngo-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:520px){ .ngo-grid{ grid-template-columns:1fr; } }
+
+  .ngo-card{
+    background:var(--paper); color:var(--ink); border-radius:12px; padding:22px;
+    display:flex; flex-direction:column; gap:10px; box-shadow:0 12px 30px rgba(0,0,0,0.25);
+  }
+  .ngo-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .ngo-badge{ font-family:var(--mono); font-size:10px; text-transform:uppercase; background:rgba(123,174,127,0.2); color:#2a572f; font-weight:700; padding:3px 8px; border-radius:100px; }
+  .ngo-status{ font-family:var(--mono); font-size:10px; text-transform:uppercase; color:var(--red); font-weight:600; }
+  .ngo-card h3{ font-size:16px; font-weight:800; text-transform:uppercase; margin-top:4px; }
+  .ngo-sub{ font-size:12.5px; color:#4a5a50; line-height:1.4; }
+  .ngo-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:10px; padding-top:12px; border-top:1px dashed rgba(17,32,26,0.2); font-family:var(--mono); font-size:10.5px; color:#3a4a41; }
+  .ngo-stats span{ display:block; font-family:var(--display); font-size:15px; color:var(--ink); }
+
+  .reviews-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px; }
+  @media(max-width:850px){ .reviews-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media(max-width:520px){ .reviews-grid{ grid-template-columns:1fr; } }
+
+  .review-card{
+    background:var(--ink-soft); border:1px solid var(--line); border-radius:12px; padding:22px;
+    display:flex; flex-direction:column; gap:12px;
+  }
+  .review-stars{ color:var(--yellow); font-size:14px; letter-spacing:2px; }
+  .review-text{ font-size:14px; color:var(--paper-dim); line-height:1.6; font-style:italic; flex:1; }
+  .review-author strong{ display:block; font-size:13.5px; color:var(--paper); }
+  .review-author span{ font-family:var(--mono); font-size:11px; color:var(--green); display:block; margin-top:2px; }
 </style>
 </head>
 <body>
@@ -453,6 +503,7 @@
     </button>
     <div class="tabs" role="tablist">
       <button class="tab-btn active" data-tab="marketplace">Marketplace</button>
+      <button class="tab-btn" data-tab="features">Features & Impact</button>
       <button class="tab-btn" data-tab="about">About</button>
     </div>
     <div class="nav-actions">
@@ -519,6 +570,157 @@
 
     <div class="section-head"><span class="section-num">◆</span><h2 class="section-title">Crumbz <em>outlets</em></h2></div>
     <div class="outlet-grid" id="outletGrid"></div>
+  </section>
+
+  <!-- ============ FEATURES & IMPACT VIEW ============ -->
+  <section id="view-features" class="view wrap">
+    <div class="hero-mini" style="padding-top:48px;">
+      <p style="font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:0.1em; color:var(--green); margin-bottom:10px;">Gwalior Pilot Validation · ITM University Campus Region</p>
+      <h1>Platform <span>Features</span><br>& Pilot Impact.</h1>
+      <p>Crumbz bridges campus canteens, hostel tuck shops, and local Gwalior food vendors with price-conscious buyers and verified food rescue non-profits before food reaches expiry.</p>
+
+      <div class="stats-strip" style="margin-top:28px;">
+        <div class="stat-pill">
+          <div class="num">68</div>
+          <div class="lab">Orders Completed</div>
+        </div>
+        <div class="stat-pill">
+          <div class="num">8</div>
+          <div class="lab">Active Campus Outlets</div>
+        </div>
+        <div class="stat-pill">
+          <div class="num">185</div>
+          <div class="lab">Meals Rescued</div>
+        </div>
+        <div class="stat-pill">
+          <div class="num">142 kg</div>
+          <div class="lab">Surplus Saved</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 1: Features & Live Demos -->
+    <div class="section-head"><span class="section-num">01</span><h2 class="section-title">Core <em>Platform Features</em></h2></div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feat-icon">⚡</div>
+        <h3>Dynamic Proximity Pricing</h3>
+        <p>Algorithmic price decay based on hours remaining until expiry. Items nearing expiry drop by 50% to 80% to guarantee rapid shelf clearance.</p>
+        <div class="feat-tag">Automated Markdown</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">📸</div>
+        <h3>Barcode Auto-Fill Lookup</h3>
+        <p>Integrated camera barcode reader powered by Open Food Facts. Automatically retrieves product title, brand, category, and weight in seconds.</p>
+        <button type="button" class="btn-demo" id="demoBarcodeBtn">Test Barcode Scanner 📸</button>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🏷️</div>
+        <h3>AI Label Expiry Extractor</h3>
+        <p>On-device optical character recognition powered by Tesseract.js. Scans packaging label images to extract printed expiry dates.</p>
+        <button type="button" class="btn-demo" id="demoOcrBtn">Test OCR Date Reader 🏷️</button>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🎫</div>
+        <h3>Dynamic SVG QR Rescue Pass</h3>
+        <p>Instant digital pass generator for claim verification. Rendered using lightweight inline vector SVG graphics for zero-latency counter redemption.</p>
+        <button type="button" class="btn-demo" id="demoQrBtn">View Sample Rescue Pass 🎫</button>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🏬</div>
+        <h3>Hostel & Merchant Dashboard</h3>
+        <p>Dedicated management portal for campus canteens and local stores to manage active listings, adjust inventory stock, and track claims.</p>
+        <div class="feat-tag">Merchant Portal</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feat-icon">🎁</div>
+        <h3>Zero-Cost NGO Redistribution</h3>
+        <p>Surplus food marked as free donation routes automatically to verified local Gwalior food relief networks at zero cost to recipients.</p>
+        <div class="feat-tag">SDG 2 Zero Hunger</div>
+      </div>
+    </div>
+
+    <!-- Section 2: Gwalior NGO Partners -->
+    <div class="section-head"><span class="section-num">02</span><h2 class="section-title">Verified <em>Gwalior NGO Network</em></h2></div>
+    <div class="ngo-grid">
+      <div class="ngo-card">
+        <div class="ngo-top">
+          <div class="ngo-badge">Verified Partner</div>
+          <div class="ngo-status">Active Pickup</div>
+        </div>
+        <h3>Robin Hood Army (Gwalior Chapter)</h3>
+        <p class="ngo-sub">Focus: ITM Hostel Canteens & Campus Surplus Collection</p>
+        <div class="ngo-stats">
+          <div><span>74 kg</span> saved</div>
+          <div><span>85+</span> meals</div>
+          <div><span>Evening</span> route</div>
+        </div>
+      </div>
+
+      <div class="ngo-card">
+        <div class="ngo-top">
+          <div class="ngo-badge">Verified Partner</div>
+          <div class="ngo-status">Daily Dispatch</div>
+        </div>
+        <h3>Gwalior Annapurna Food Relief</h3>
+        <p class="ngo-sub">Focus: Turari & Jhansi Road Community Food Relief</p>
+        <div class="ngo-stats">
+          <div><span>42 kg</span> saved</div>
+          <div><span>60+</span> meals</div>
+          <div><span>Daily</span> route</div>
+        </div>
+      </div>
+
+      <div class="ngo-card">
+        <div class="ngo-top">
+          <div class="ngo-badge">Verified Partner</div>
+          <div class="ngo-status">Campus Wing</div>
+        </div>
+        <h3>ITM Student Social Service Wing</h3>
+        <p class="ngo-sub">Focus: On-Campus Redistribution to Campus Service Staff</p>
+        <div class="ngo-stats">
+          <div><span>26 kg</span> saved</div>
+          <div><span>40+</span> meals</div>
+          <div><span>Instant</span> claim</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Commercial Pilot Reviews -->
+    <div class="section-head"><span class="section-num">03</span><h2 class="section-title">Pilot <em>Feedback & Reviews</em></h2></div>
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Picked up fresh sandwiches and bakery snacks right before hostel canteen closing time for under ₹30. The QR pass scan at the counter took literally 5 seconds!"</p>
+        <div class="review-author">
+          <strong>Aarav Sharma</strong>
+          <span>ITM Boys Hostel 3 Resident, Gwalior</span>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"We used to throw away 10-15 unsold bakery items every single evening. With Crumbz, students buy near-expiry stock within 30 minutes of our discount posting."</p>
+        <div class="review-author">
+          <strong>Ramesh Verma</strong>
+          <span>Manager, ITM Turari Tuck Shop</span>
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"The direct donation alert system notifies our volunteer team immediately when canteen surplus batch food is ready. It makes food recovery completely seamless."</p>
+        <div class="review-author">
+          <strong>Priya Saxena</strong>
+          <span>Volunteer Lead, Robin Hood Army Gwalior</span>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ ABOUT VIEW ============ -->
@@ -1527,10 +1729,44 @@
       btn.classList.add("active");
       var target = btn.getAttribute("data-tab");
       document.getElementById("view-marketplace").classList.toggle("active", target==="marketplace");
+      document.getElementById("view-features").classList.toggle("active", target==="features");
       document.getElementById("view-about").classList.toggle("active", target==="about");
       window.scrollTo({top:0, behavior:"smooth"});
     });
   });
+
+  // ---------- features page demo triggers ----------
+  var demoBarcodeBtn = document.getElementById("demoBarcodeBtn");
+  if (demoBarcodeBtn) {
+    demoBarcodeBtn.addEventListener("click", function(){
+      openScanner();
+    });
+  }
+
+  var demoOcrBtn = document.getElementById("demoOcrBtn");
+  if (demoOcrBtn) {
+    demoOcrBtn.addEventListener("click", function(){
+      if (!state.user){ toast("Sign in to test listing OCR date scanner"); openAuth("login"); return; }
+      openListModal();
+      setTimeout(function(){
+        var btn = document.getElementById("scanExpiryBtn");
+        if (btn) btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    });
+  }
+
+  var demoQrBtn = document.getElementById("demoQrBtn");
+  if (demoQrBtn) {
+    demoQrBtn.addEventListener("click", function(){
+      document.getElementById("passItemName").textContent = "Amul Butter & Fresh Mawa Roll (2x)";
+      document.getElementById("passOutletName").textContent = "ITM Turari Tuck Shop (Gwalior)";
+      var passCode = "CRUMBZ-GWL-7821";
+      document.getElementById("passCodeText").textContent = passCode;
+      document.getElementById("passQrSvg").innerHTML = generateQrSvg(passCode);
+      document.getElementById("passInstructionText").textContent = "Gwalior Pilot Verification Pass: Show this QR pass or code to store counter associate for instant 5-second redemption.";
+      document.getElementById("claimPassOverlay").classList.add("open");
+    });
+  }
 
   // ---------- barcode decor ----------
   document.querySelectorAll(".barcode").forEach(function(bc){
