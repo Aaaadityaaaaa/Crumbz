@@ -8,4 +8,4 @@ services:
       - key: PORT
         value: 10000
       - key: JWT_SECRET
-        generateValue: true
+        value: crumbz-super-secret-persistent-key-2026-v1

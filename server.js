@@ -7,7 +7,7 @@ const crypto = require('crypto');
 const store = require('./db');
 
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
+const JWT_SECRET = process.env.JWT_SECRET || 'crumbz-super-secret-persistent-key-2026-v1';
 const TOKEN_EXPIRY = '30d';
 
 function uid() {
