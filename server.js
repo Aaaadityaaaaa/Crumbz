@@ -53,6 +53,18 @@ if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 
 // ---------- app ----------
 const app = express();
+
+// CORS & OPTIONS Preflight middleware for localtunnel & mobile browsers
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Bypass-Tunnel-Reminder, bypass-tunnel-reminder');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

@@ -925,7 +925,7 @@
   // ---------- API ----------
   async function api(path, options){
     options = options || {};
-    var headers = Object.assign({ "Content-Type":"application/json" }, options.headers || {});
+    var headers = Object.assign({ "Content-Type":"application/json", "Bypass-Tunnel-Reminder":"true" }, options.headers || {});
     if (state.token) headers["Authorization"] = "Bearer " + state.token;
     var url = path.startsWith("http") ? path : (location.origin + path);
     var res;
@@ -937,7 +937,7 @@
       });
     } catch(netErr) {
       console.error("API fetch error:", netErr);
-      throw new Error("Network error — check connection to " + location.host);
+      throw new Error("Connection failed — please refresh page or check network.");
     }
     var data = null;
     try { data = await res.json(); } catch(e){ data = null; }
